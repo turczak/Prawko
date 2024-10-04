@@ -4,49 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6422871b-3110-48fe-a981-5daa8cca9e23" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/PrawkoApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/config/SpringSecurity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/QuestionController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/RoleController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/TestController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/UserController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/dto/QuestionDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/dto/RegisterDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/dto/UserDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/mappers/QuestionMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/Language.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/Question.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/Role.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/Test.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/repositories/QuestionRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/repositories/RoleRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/repositories/TestRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/repositories/UserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/QuestionService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/RoleService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/TestService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/UserService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/CustromUserDetailsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/QuestionServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/RoleServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/TestServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/UserServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/register.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/templates/users.html" afterDir="false" />
+    <list default="true" id="6422871b-3110-48fe-a981-5daa8cca9e23" name="Changes" comment="init">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/config/SpringSecurity.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/config/SpringSecurity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/controllers/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/CustromUserDetailsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/pl/turlap/prawko/services/implementation/CustromUserDetailsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/templates/login.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +28,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="17be21e9-986a-46da-89ef-397bdbc50cf7" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
@@ -123,6 +90,19 @@
       <option name="presentableId" value="Default" />
       <updated>1727441583790</updated>
     </task>
+    <task id="LOCAL-00001" summary="init">
+      <option name="closed" value="true" />
+      <created>1728046315675</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1728046315675</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init" />
+    <option name="LAST_COMMIT_MESSAGE" value="init" />
   </component>
 </project>

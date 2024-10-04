@@ -2,6 +2,7 @@ package pl.turlap.prawko.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import pl.turlap.prawko.dto.RegisterDto;
@@ -11,7 +12,7 @@ import pl.turlap.prawko.services.UserService;
 import java.util.List;
 
 
-@RestController
+@Controller
 @RequestMapping(path = "/users")
 public class UserController {
 
