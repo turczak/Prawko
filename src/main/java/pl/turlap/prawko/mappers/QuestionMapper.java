@@ -1,11 +1,13 @@
 package pl.turlap.prawko.mappers;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import pl.turlap.prawko.dto.QuestionDto;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.Question;
 
 @Component
+@AllArgsConstructor
 public class QuestionMapper {
 
     public QuestionDto mapToQuestionDto(Question question, Language language) {

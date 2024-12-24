@@ -18,7 +18,6 @@ public class UserDto {
     private String lastname;
     private String username;
     private String email;
-    private String password;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private List<Role> roles;

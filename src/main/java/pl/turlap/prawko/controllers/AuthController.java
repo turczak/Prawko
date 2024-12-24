@@ -40,29 +40,6 @@ public class AuthController {
         return "register";
     }
 
-    @PostMapping("/register/save")
-    public String registration(@Validated @ModelAttribute("user") RegisterDto registerDto,
-                               BindingResult result,
-                               Model model){
-        User existingUserByEmail = userService.findByEmail(registerDto.getEmail());
 
-        if(existingUserByEmail != null && existingUserByEmail.getEmail() != null && !existingUserByEmail.getEmail().isEmpty()){
-            result.rejectValue("email", null,
-                    "There is already an account registered with the same email");
-        }
 
-        User existingUserByUsername = userService.findByUsername(registerDto.getUsername());
-
-        if(existingUserByUsername != null && existingUserByUsername.getUsername() != null && !existingUserByUsername.getUsername().isEmpty()){
-            result.rejectValue("username", null,
-                    "There is already an account registered with the same username");
-        }
-
-        if(result.hasErrors()){
-            model.addAttribute("user", registerDto);
-            return "/register";
-        }
-        userService.saveUser(registerDto);
-        return "redirect:/register?success";
-    }
 }
