@@ -20,58 +20,17 @@ public class Question {
     @Column(name = "name", columnDefinition = "VARCHAR(10)")
     private String name;
 
-    // POLISH
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    private List<QuestionTranslation> translations;
 
-    @Column(name = "content_PL", columnDefinition = "TEXT")
-    private String content_PL;
-
-    @Column(name = "answer_A_PL", columnDefinition = "TEXT")
-    private String answer_A_PL;
-
-    @Column(name = "answer_B_PL", columnDefinition = "TEXT")
-    private String answer_B_PL;
-
-    @Column(name = "answer_C_PL", columnDefinition = "TEXT")
-    private String answer_C_PL;
-
-    // ENGLISH
-
-    @Column(name = "content_EN", columnDefinition = "TEXT")
-    private String content_EN;
-
-    @Column(name = "answer_A_EN", columnDefinition = "TEXT")
-    private String answer_A_EN;
-
-    @Column(name = "answer_B_EN", columnDefinition = "TEXT")
-    private String answer_B_EN;
-
-    @Column(name = "answer_C_EN", columnDefinition = "TEXT")
-    private String answer_C_EN;
-
-    // DEUTCH
-
-    @Column(name = "content_DE", columnDefinition = "TEXT")
-    private String content_DE;
-
-    @Column(name = "answer_A_DE", columnDefinition = "TEXT")
-    private String answer_A_DE;
-
-    @Column(name = "answer_B_DE", columnDefinition = "TEXT")
-    private String answer_B_DE;
-
-    @Column(name = "answer_C_DE", columnDefinition = "TEXT")
-    private String answer_C_DE;
-
-    // OTHER IMPORTANT THINGS
-
-    @Column(name = "correct_answer", columnDefinition = "VARCHAR(1)")
-    private String correct;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
+    private List<Answer> answers;
 
     @Column(name = "media_url", columnDefinition = "VARCHAR(50)")
     private String media;
 
     @Column(name = "type", columnDefinition = "VARCHAR(25)")
-    private String type;
+    private QuestionType type;
 
     @Column(name = "value", columnDefinition = "INT")
     private Integer value;
@@ -88,4 +47,3 @@ public class Question {
     private List<Test> tests = new ArrayList<>();
 
 }
-

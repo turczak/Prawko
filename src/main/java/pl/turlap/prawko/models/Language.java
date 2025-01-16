@@ -1,5 +1,28 @@
 package pl.turlap.prawko.models;
 
-public enum Language {
-    PL, EN, DE
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.util.List;
+
+@Entity(name = "languages")
+@Data
+public class Language {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "code")
+    private String code;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "language")
+    private List<QuestionTranslation> questionTranslations;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "language")
+    private List<AnswerTranslation> answerTranslations;
+
 }
