@@ -1,10 +1,10 @@
 package pl.turlap.prawko.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 
-@Getter
-@Builder
+@Data
 public class LoginRequest {
 
     private String username;

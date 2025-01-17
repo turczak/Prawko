@@ -2,10 +2,7 @@ package pl.turlap.prawko.dto;
 
 import lombok.*;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 public class RegisterDto {
 
     private String firstname;

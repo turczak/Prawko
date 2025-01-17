@@ -2,13 +2,11 @@ package pl.turlap.prawko.models;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name = "users")
 @Data
@@ -30,7 +28,7 @@ public class User {
     @Column(name = "email", columnDefinition = "VARCHAR(50)")
     private String email;
 
-    @Column(name = "password", columnDefinition = "VARCHAR(50)")
+    @Column(name = "password", columnDefinition = "VARCHAR(60)")
     private String password;
 
     @Column(name = "enabled", columnDefinition = "BOOLEAN")

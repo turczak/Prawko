@@ -1,7 +1,6 @@
 package pl.turlap.prawko.models;
 
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;

@@ -1,15 +1,9 @@
 package pl.turlap.prawko.models;
 
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.processing.SQL;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity(name = "questions")
 @Data
