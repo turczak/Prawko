@@ -2,7 +2,6 @@ package pl.turlap.prawko.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import pl.turlap.prawko.models.QuestionTranslation;
 import pl.turlap.prawko.models.QuestionType;
 
