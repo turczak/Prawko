@@ -6,18 +6,19 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "roles")
 @Data
-@NoArgsConstructor
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "INT")
     private Long id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = "name", columnDefinition = "VARCHAR(10)")
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private List<User> users = new ArrayList<>();
+    private List<User> users;
 }

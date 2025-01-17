@@ -1,16 +1,22 @@
 package pl.turlap.prawko.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.processing.SQL;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "questions")
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(exclude = "translations")
 public class Question {
 
     @Id
@@ -29,7 +35,8 @@ public class Question {
     @Column(name = "media_url", columnDefinition = "VARCHAR(50)")
     private String media;
 
-    @Column(name = "type", columnDefinition = "VARCHAR(25)")
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
     private QuestionType type;
 
     @Column(name = "value", columnDefinition = "INT")
@@ -37,13 +44,13 @@ public class Question {
 
     @ManyToMany
     @JoinTable(
-            name = "question_categories",
+            name = "questions_categories",
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    private List<Category> categories = new ArrayList<>();
+    private List<Category> categories;
 
     @ManyToMany(mappedBy = "questions")
-    private List<Test> tests = new ArrayList<>();
+    private List<Test> tests;
 
 }

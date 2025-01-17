@@ -8,39 +8,39 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "users")
 @Data
-@NoArgsConstructor
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", columnDefinition = "INT")
     private Long id;
 
-    @Column(name = "firstname")
+    @Column(name = "firstname", columnDefinition = "VARCHAR(25)")
     private String firstname;
 
-    @Column(name = "lastname")
+    @Column(name = "lastname", columnDefinition = "VARCHAR(50)")
     private String lastname;
 
-    @Column(name = "username")
+    @Column(name = "username", columnDefinition = "VARCHAR(25)")
     private String username;
 
-    @Column(name = "email")
+    @Column(name = "email", columnDefinition = "VARCHAR(50)")
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", columnDefinition = "VARCHAR(50)")
     private String password;
 
-    @Column(name = "enabled")
+    @Column(name = "enabled", columnDefinition = "BOOLEAN")
     private Boolean enabled;
 
-    @Column(name = "created")
+    @Column(name = "created", columnDefinition = "DATETIME")
     @CreationTimestamp
     private LocalDateTime createdOn;
 
-    @Column(name = "updated")
+    @Column(name = "updated", columnDefinition = "DATETIME")
     @UpdateTimestamp
     private LocalDateTime updatedOn;
 

@@ -8,6 +8,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "tests")
 @Data
@@ -15,13 +16,14 @@ public class Test {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", columnDefinition = "INT")
     private Long id;
 
-    @Column(name = "createdAt")
+    @Column(name = "createdAt", columnDefinition = "DATETIME")
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToMany(cascade = CascadeType.ALL)
