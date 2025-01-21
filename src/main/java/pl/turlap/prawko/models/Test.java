@@ -6,7 +6,7 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "tests")
+@Entity(name = "test")
 @Data
 public class Test {
 
@@ -15,7 +15,7 @@ public class Test {
     @Column(name = "id", columnDefinition = "INT")
     private Long id;
 
-    @Column(name = "createdAt", columnDefinition = "DATETIME")
+    @Column(name = "created", columnDefinition = "DATETIME")
     private LocalDateTime createdAt;
 
     @ManyToOne
@@ -24,7 +24,7 @@ public class Test {
 
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
-            name = "test_questions",
+            name = "test_question",
             joinColumns = @JoinColumn(name = "test_id"),
             inverseJoinColumns = @JoinColumn(name = "question_id")
     )

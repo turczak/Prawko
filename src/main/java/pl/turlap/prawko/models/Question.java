@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.util.List;
 
-@Entity(name = "questions")
+@Entity(name = "question")
 @Data
 @Builder
 @AllArgsConstructor
@@ -27,7 +27,7 @@ public class Question {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "question")
     private List<Answer> answers;
 
-    @Column(name = "media_url", columnDefinition = "VARCHAR(50)")
+    @Column(name = "media_name", columnDefinition = "VARCHAR(50)")
     private String media;
 
     @Column(name = "type")
@@ -40,7 +40,7 @@ public class Question {
     @ManyToMany
     @JsonManagedReference
     @JoinTable(
-            name = "questions_categories",
+            name = "question_category",
             joinColumns = @JoinColumn(name = "question_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )

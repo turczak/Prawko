@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@Entity(name = "languages")
+@Entity(name = "language")
 @Data
 public class Language {
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Entity(name = "categories")
+@Entity(name = "category")
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,7 +24,7 @@ public class Category {
     @Column(name = "name", columnDefinition = "VARCHAR(2)")
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "category")
     @JsonBackReference
     private List<Question> questions;
 }

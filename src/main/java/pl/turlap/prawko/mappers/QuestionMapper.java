@@ -80,11 +80,11 @@ public class QuestionMapper {
                     .stream()
                     .map(csvLine -> {
                                 Question question = Question.builder()
-                                        .id(Long.valueOf(csvLine.getNumer_pytania()))
-                                        .name(csvLine.getNazwa_pytania())
-                                        .type(QuestionType.valueOf(csvLine.getTyp_pytania()))
-                                        .media(csvLine.getMedia())
-                                        .value(csvLine.getWartosc())
+                                        .id(Long.valueOf(csvLine.getId()))
+                                        .name(csvLine.getName())
+                                        .type(QuestionType.valueOf(csvLine.getType()))
+                                        .media(csvLine.getMediaName())
+                                        .value(csvLine.getValue())
                                         .build();
 
                                 List<Category> categories = getCategoriesFromCSV(csvLine);
@@ -108,7 +108,7 @@ public class QuestionMapper {
     private List<Category> getCategoriesFromCSV(QuestionCSVRepresentation csvLine) {
         List<Category> categories = new ArrayList<>();
 
-        for (String s : csvLine.getKategorie().split(",")) {
+        for (String s : csvLine.getCategories().split(",")) {
             if (categoryRepository.findByName(s) != null) {
                 categories.add(categoryRepository.findByName(s));
             }
@@ -119,14 +119,14 @@ public class QuestionMapper {
 
     private List<Answer> getAnswerTranslationsFromCSV(QuestionCSVRepresentation csvLine, Question question) {
         List<Answer> answers = new ArrayList<>();
-        Character correctAnswer = csvLine.getPoprawna_odp();
+        Character correctAnswer = csvLine.getCorrectAnswer();
 
-        if (csvLine.getTyp_pytania().equals(QuestionType.PODSTAWOWY.name())) {
+        if (csvLine.getType().equals(QuestionType.PODSTAWOWY.name())) {
             List<Answer> basicAnswers = mapBasicQuestionAnswers(csvLine, question);
             answers.addAll(basicAnswers);
         }
 
-        if (csvLine.getTyp_pytania().equals(QuestionType.SPECJALISTYCZNY.name())) {
+        if (csvLine.getType().equals(QuestionType.SPECJALISTYCZNY.name())) {
 
             List<Answer> specialAnswers = getSpecialQuestionAnswersFromCSV(csvLine, question);
             answers.addAll(specialAnswers);
@@ -179,9 +179,9 @@ public class QuestionMapper {
         return languageRepository.findAll().stream()
                 .map(language -> {
                     String content = switch (language.getCode()) {
-                        case "PL" -> csvLine.getTresc_PL();
-                        case "EN" -> csvLine.getTresc_EN();
-                        case "DE" -> csvLine.getTresc_DE();
+                        case "PL" -> csvLine.getContent_PL();
+                        case "EN" -> csvLine.getContent_EN();
+                        case "DE" -> csvLine.getContent_DE();
                         default -> throw new IllegalStateException("Unexpected value: " + language.getCode());
                     };
                     return QuestionTranslation.builder()
@@ -193,7 +193,7 @@ public class QuestionMapper {
     }
 
     private List<Answer> mapBasicQuestionAnswers(QuestionCSVRepresentation csvLine, Question question) {
-        boolean isCorrectAnswerT = csvLine.getPoprawna_odp().equals('T');
+        boolean isCorrectAnswerT = csvLine.getCorrectAnswer().equals('T');
 
         Answer answer_1 = Answer.builder()
                 .question(question)

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import java.util.Collections;
 import java.util.List;
 
-@Entity(name = "answers")
+@Entity(name = "answer")
 @Data
 @Builder
 @NoArgsConstructor
@@ -24,14 +24,14 @@ public class Answer {
     @Column(name = "label", columnDefinition = "CHAR")
     private Character label;
 
-    @Column(name = "isCorrect", columnDefinition = "BOOLEAN")
+    @Column(name = "is_correct", columnDefinition = "BOOLEAN")
     private Boolean isCorrect;
 
     @ManyToOne
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "answer_id", cascade = CascadeType.ALL)
     private List<AnswerTranslation> translations;
 
     public Answer(Character label, Question question) {

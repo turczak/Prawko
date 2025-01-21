@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity(name = "question_translations")
+@Entity(name = "question_translation")
 @Data
 @Builder
 @NoArgsConstructor
@@ -22,11 +22,11 @@ public class QuestionTranslation {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "question_id", nullable = false)
+    @JoinColumn(name = "question_id")
     private Question question;
 
     @ManyToOne
-    @JoinColumn(name = "language_id", nullable = false)
+    @JoinColumn(name = "language_id")
     private Language language;
 
 }

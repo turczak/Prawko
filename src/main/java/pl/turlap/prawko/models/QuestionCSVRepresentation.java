@@ -11,63 +11,60 @@ import lombok.*;
 public class QuestionCSVRepresentation {
 
     @CsvBindByName(column = "Nazwa pytania")
-    private String nazwa_pytania;
+    private String name;
 
     @CsvBindByName(column = "Numer pytania")
-    private Integer numer_pytania;
+    private Integer id;
 
     @CsvBindByName(column = "Pytanie")
-    private String tresc_PL;
+    private String content_PL;
 
     @CsvBindByName(column = "Odpowiedź A")
-    private String odp_A_PL;
+    private String answer_A_PL;
 
     @CsvBindByName(column = "Odpowiedź B")
-    private String odp_B_PL;
+    private String answer_B_PL;
 
     @CsvBindByName(column = "Odpowiedź C")
-    private String odp_C_PL;
+    private String answer_C_PL;
 
     @CsvBindByName(column = "Pytanie ENG")
-    private String tresc_EN;
+    private String content_EN;
 
     @CsvBindByName(column = "Odpowiedź ENG A")
-    private String odp_A_EN;
+    private String answer_A_EN;
 
     @CsvBindByName(column = "Odpowiedź ENG B")
-    private String odp_B_EN;
+    private String answer_B_EN;
 
     @CsvBindByName(column = "Odpowiedź ENG C")
-    private String odp_C_EN;
+    private String answer_C_EN;
 
     @CsvBindByName(column = "Pytanie DE")
-    private String tresc_DE;
+    private String content_DE;
 
     @CsvBindByName(column = "Odpowiedź DE A")
-    private String odp_A_DE;
+    private String answer_A_DE;
 
     @CsvBindByName(column = "Odpowiedź DE B")
-    private String odp_B_DE;
+    private String answer_B_DE;
 
     @CsvBindByName(column = "Odpowiedź DE C")
-    private String odp_C_DE;
+    private String answer_C_DE;
 
     @CsvBindByName(column = "Poprawna odp")
-    private Character poprawna_odp;
+    private Character correctAnswer;
 
     @CsvBindByName(column = "Media")
-    private String media;
-
-    @CsvBindByName(column = "Nazwa")
-    private String nazwa;
+    private String mediaName;
 
     @CsvBindByName(column = "Zakres struktury")
-    private String typ_pytania;
+    private String type;
 
     @CsvBindByName(column = "Liczba punktów")
-    private Integer wartosc;
+    private Integer value;
 
     @CsvBindByName(column = "Kategorie")
-    private String kategorie;
+    private String categories;
 
 }

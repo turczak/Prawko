@@ -9,7 +9,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity(name = "users")
+@Entity(name = "user")
 @Data
 public class User {
     @Id
@@ -17,13 +17,13 @@ public class User {
     @Column(name = "id", columnDefinition = "INT")
     private Long id;
 
-    @Column(name = "firstname", columnDefinition = "VARCHAR(25)")
+    @Column(name = "first_name", columnDefinition = "VARCHAR(25)")
     private String firstname;
 
-    @Column(name = "lastname", columnDefinition = "VARCHAR(50)")
+    @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
     private String lastname;
 
-    @Column(name = "username", columnDefinition = "VARCHAR(25)")
+    @Column(name = "user_name", columnDefinition = "VARCHAR(25)")
     private String username;
 
     @Column(name = "email", columnDefinition = "VARCHAR(50)")
@@ -46,7 +46,7 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     @JoinTable(
-            name = "users_roles",
+            name = "user_role",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")}
     )

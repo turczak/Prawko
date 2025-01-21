@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
-@Entity(name = "roles")
+@Entity(name = "role")
 @Data
 public class Role {
     @Id
@@ -17,7 +17,7 @@ public class Role {
     @Column(name = "name", columnDefinition = "VARCHAR(10)")
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "role")
     @JsonBackReference
     private List<User> users;
 }
