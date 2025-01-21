@@ -29,4 +29,8 @@ public class AnswerTranslation {
     @JoinColumn(name = "language_id")
     private Language language;
 
+    public AnswerTranslation(Answer answer, Language language) {
+        this.answer = answer;
+        this.language = language;
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 @Entity(name = "answers")
@@ -33,4 +34,10 @@ public class Answer {
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<AnswerTranslation> translations;
 
+    public Answer(Character label, Question question) {
+        this.label = label;
+        this.question = question;
+        this.translations = Collections.emptyList();
+        this.isCorrect = false;
+    }
 }

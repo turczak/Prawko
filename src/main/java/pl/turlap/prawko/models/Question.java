@@ -1,5 +1,6 @@
 package pl.turlap.prawko.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +38,7 @@ public class Question {
     private Integer value;
 
     @ManyToMany
+    @JsonManagedReference
     @JoinTable(
             name = "questions_categories",
             joinColumns = @JoinColumn(name = "question_id"),
