@@ -2,6 +2,7 @@ package pl.turlap.prawko.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,56 +17,72 @@ import java.util.List;
 
 
 @Controller
+@RequestMapping("/users")
 public class UserController {
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "users/all2")
-    public List<UserDto> findAllUsers(){
-        return userService.findAllUsers();
-    }
-
-    @GetMapping("users/all")
-    public String users(Model model){
+    // html view, table with users
+    @RequestMapping(path = "/all", method = RequestMethod.GET)
+    public String users(Model model) {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "users";
     }
 
-    @DeleteMapping(path = "users/delete/{userId}")
-    public void deleteUser(@PathVariable("userId") Long userId){
-        userService.deleteUserById(userId);
+    // JSON
+    @RequestMapping(path = "/all-2", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<UserDto> showAllUsers() {
+        return userService.findAllUsers();
     }
 
-    @PostMapping("/users/save")
+    @RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long userId) {
+        return userService.deleteUserById(userId);
+    }
+
+    @RequestMapping(path = "/edit/{userId}", method = RequestMethod.PATCH, consumes = "application/json")
+    public ResponseEntity<String> editUser(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
+        userDto.setId(userId);
+        return userService.editUser(userDto);
+    }
+
+    @RequestMapping(path = "/promote/{id}", method = RequestMethod.PATCH)
+    public ResponseEntity<String> promoteUser(@PathVariable("id") Long id) {
+        return userService.promoteUser(id);
+    }
+
+    @PostMapping("/save")
     public String registration(@Validated @ModelAttribute("user") RegisterDto registerDto,
                                BindingResult result,
-                               Model model){
+                               Model model) {
         User existingUserByEmail = userService.findByEmail(registerDto.getEmail());
 
-        if(existingUserByEmail != null && existingUserByEmail.getEmail() != null && !existingUserByEmail.getEmail().isEmpty()){
+        if (existingUserByEmail != null && existingUserByEmail.getEmail() != null && !existingUserByEmail.getEmail().isEmpty()) {
             result.rejectValue("email", null,
                     "There is already an account registered with the same email");
         }
 
         User existingUserByUsername = userService.findByUsername(registerDto.getUsername());
 
-        if(existingUserByUsername != null && existingUserByUsername.getUsername() != null && !existingUserByUsername.getUsername().isEmpty()){
+        if (existingUserByUsername != null && existingUserByUsername.getUsername() != null && !existingUserByUsername.getUsername().isEmpty()) {
             result.rejectValue("username", null,
                     "There is already an account registered with the same username");
         }
 
-        if(result.hasErrors()){
+        if (result.hasErrors()) {
             model.addAttribute("user", registerDto);
             return "/register";
         }
         userService.saveUser(registerDto);
         return "redirect:/register?success";
     }
+
 
 }

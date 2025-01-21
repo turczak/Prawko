@@ -2,7 +2,6 @@ package pl.turlap.prawko.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.turlap.prawko.models.Role;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,8 +15,9 @@ public class UserDto {
     private String lastname;
     private String username;
     private String email;
+    private Boolean enabled;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
-    private List<Role> roles;
+    private List<RoleDto> roles;
 
 }
