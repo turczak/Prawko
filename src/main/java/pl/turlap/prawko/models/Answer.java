@@ -31,7 +31,7 @@ public class Answer {
     @JoinColumn(name = "question_id")
     private Question question;
 
-    @OneToMany(mappedBy = "answer_id", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<AnswerTranslation> translations;
 
     public Answer(Character label, Question question) {

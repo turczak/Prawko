@@ -17,7 +17,7 @@ public class Role {
     @Column(name = "name", columnDefinition = "VARCHAR(10)")
     private String name;
 
-    @ManyToMany(mappedBy = "role")
+    @ManyToMany(mappedBy = "roles")
     @JsonBackReference
     private List<User> users;
 }

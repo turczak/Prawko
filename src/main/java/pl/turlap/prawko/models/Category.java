@@ -24,7 +24,7 @@ public class Category {
     @Column(name = "name", columnDefinition = "VARCHAR(2)")
     private String name;
 
-    @ManyToMany(mappedBy = "category")
+    @ManyToMany(mappedBy = "categories")
     @JsonBackReference
     private List<Question> questions;
 }

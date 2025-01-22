@@ -170,7 +170,7 @@ public class QuestionMapper {
     }
 
     private String getTranslationContent(Language language, char label, QuestionCSVRepresentation csvLine) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        String prefix = "getOdp_";
+        String prefix = "getAnswer_";
         Method method = csvLine.getClass().getMethod(prefix + label + "_" + language.getCode().toUpperCase());
         return method.invoke(csvLine).toString();
     }
