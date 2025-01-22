@@ -1,13 +1,20 @@
 package pl.turlap.prawko.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "test")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Test {
 
     @Id
@@ -23,6 +30,7 @@ public class Test {
     private User user;
 
     @ManyToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
     @JoinTable(
             name = "test_question",
             joinColumns = @JoinColumn(name = "test_id"),

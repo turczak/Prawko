@@ -1,9 +1,9 @@
-INSERT INTO roles (name)
+INSERT INTO role (name)
 VALUES
 ('USER'),
 ('ADMIN');
 
-INSERT INTO categories (name)
+INSERT INTO category (name)
 VALUES
 ('A'),
 ('A1'),
@@ -16,3 +16,9 @@ VALUES
 ('D'),
 ('D1'),
 ('T');
+
+INSERT INTO language (code, name)
+VALUES
+('PL', 'polish'),
+('EN', 'english'),
+('DE', 'german');

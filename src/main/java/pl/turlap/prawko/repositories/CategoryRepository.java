@@ -2,11 +2,11 @@ package pl.turlap.prawko.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pl.turlap.prawko.models.Test;
+import pl.turlap.prawko.models.Category;
 
 @Repository
-public interface TestRepository extends JpaRepository<Test, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long> {
 
-
+    Category findByName(String name);
 
 }
