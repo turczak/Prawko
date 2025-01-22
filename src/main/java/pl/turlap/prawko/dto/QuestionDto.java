@@ -2,7 +2,6 @@ package pl.turlap.prawko.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.QuestionType;
 
 import java.util.List;
@@ -17,6 +16,6 @@ public class QuestionDto {
     private String media;
     private QuestionType type;
     private Integer value;
-    private List<Category> categories;
+    private List<CategoryDto> categories;
 
 }

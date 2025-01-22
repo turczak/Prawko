@@ -1,17 +1,14 @@
 package pl.turlap.prawko.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import pl.turlap.prawko.dto.QuestionDto;
 
 import pl.turlap.prawko.models.Language;
-import pl.turlap.prawko.models.Question;
+import pl.turlap.prawko.models.QuestionType;
 import pl.turlap.prawko.services.QuestionService;
-import pl.turlap.prawko.utils.CsvUtility;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,47 +16,41 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/questions")
+@AllArgsConstructor
 public class QuestionController {
 
-    private QuestionService questionService;
+    private final QuestionService questionService;
 
-    @Autowired
-    public QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/all{language}")
-    public List<QuestionDto> findAllQuestions(@RequestParam(name = "language") Language language) {
+    @GetMapping("/all/{language}")
+    @ResponseBody
+    public List<QuestionDto> findAllQuestions(@PathVariable String language) {
         return questionService.findAllQuestionsByLanguage(language);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/{id}")
-    public Optional<Question> findQuestionById(@PathVariable("id") Long id) {
-        return questionService.findById(id);
+    @GetMapping("/find/{id}/{language}")
+    @ResponseBody
+    public Optional<QuestionDto> findQuestionById(@PathVariable(name = "id") Long id,
+                                                  @PathVariable(name = "language") String language) {
+        return questionService.findById(id, language);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/all/{language}{type}{value}")
-    public List<QuestionDto> findALlQuestionsByTypeAndValue(@RequestParam(name = "type") String type,
-                                                            @RequestParam(name = "value") int value,
-                                                            @RequestParam(name = "language") Language language) {
-        return questionService.findALlByTypeAndValue(type, value, language);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/all/{language}/{type}/{value}")
+    public List<QuestionDto> findAllByTypeAndValue(@RequestParam(name = "type") QuestionType type,
+                                                   @RequestParam(name = "value") int value,
+                                                   @RequestParam(name = "language") Language language) {
+        return questionService.findAllByTypeAndValue(type, value, language);
     }
 
-    @PostMapping(path = "/upload/csv")
-    public ResponseEntity<?> uploadFile(@RequestParam("file")MultipartFile file){
-        String message = "";
-        if(CsvUtility.hasCsvFormat(file)){
-            try {
-                questionService.saveAllFromFile(file);
-                message = "The file is uploaded successfully: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.OK).body(message);
-            } catch (Exception e) {
-                message = "Upload failed: " + file.getOriginalFilename();
-                return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(message);
-            }
-        }
-        message = "Please upload an *.csv file.";
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(message);
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, path = "/all/{language}/{type}")
+    public List<QuestionDto> findAllQuestionsByType(@RequestParam(name = "type") QuestionType type,
+                                                    @RequestParam(name = "language") Language language) {
+        return questionService.findAllByType(type, language);
+    }
+
+    @PostMapping(value = "/upload", consumes = {"multipart/form-data"})
+    public String uploadQuestions(@RequestPart("file") MultipartFile file) {
+        questionService.saveAll(file);
+        return "redirect:/questions/upload?success";
     }
 
 }

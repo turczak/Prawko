@@ -25,12 +25,34 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class QuestionMapper {
 
-    private LanguageRepository languageRepository;
+    private final LanguageRepository languageRepository;
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+
+    private final CategoryMapper categoryMapper = new CategoryMapper();
+
 
     public QuestionDto mapToQuestionDto(Question question, Language language) {
 
+        List<AnswerDto> translatedAnswers = getAnswerDtos(question, language);
+
+        QuestionTranslation translatedQuestionContent = question.getTranslations().stream()
+                .filter(translation -> translation.getLanguage().equals(language))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No translation found for question."));
+
+        return QuestionDto.builder()
+                .name(question.getName())
+                .questionTranslation(translatedQuestionContent.getContent())
+                .answers(translatedAnswers)
+                .type(question.getType())
+                .value(question.getValue())
+                .media(question.getMedia())
+                .categories(categoryMapper.toCategoryDto(question.getCategories()))
+                .build();
+    }
+
+    private List<AnswerDto> getAnswerDtos(Question question, Language language) {
         List<AnswerDto> translatedAnswers = new ArrayList<>();
         for (Answer answer : question.getAnswers()) {
             AnswerTranslation answerTranslation = answer.getTranslations().stream()
@@ -45,22 +67,7 @@ public class QuestionMapper {
             }
             translatedAnswers.add(answerDto);
         }
-
-        QuestionTranslation translatedQuestionContent = question.getTranslations().stream()
-                .filter(translation -> translation.getLanguage().equals(language))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("No translation found for question."));
-
-        QuestionDto questionDto = QuestionDto.builder()
-                .name(question.getName())
-                .questionTranslation(translatedQuestionContent.getContent())
-                .answers(translatedAnswers)
-                .type(question.getType())
-                .value(question.getValue())
-                .media(question.getMedia())
-                .categories(question.getCategories())
-                .build();
-        return questionDto;
+        return translatedAnswers;
     }
 
     public List<Question> mapCSVtoQuestions(MultipartFile file) {
@@ -76,33 +83,37 @@ public class QuestionMapper {
                             .withIgnoreLeadingWhiteSpace(true)
                             .build();
 
-            return csvToBean.parse()
-                    .stream()
-                    .map(csvLine -> {
-                                Question question = Question.builder()
-                                        .id(Long.valueOf(csvLine.getId()))
-                                        .name(csvLine.getName())
-                                        .type(QuestionType.valueOf(csvLine.getType()))
-                                        .media(csvLine.getMediaName())
-                                        .value(csvLine.getValue())
-                                        .build();
-
-                                List<Category> categories = getCategoriesFromCSV(csvLine);
-                                question.setCategories(categories);
-
-                                List<QuestionTranslation> translations = mapQuestionTranslations(csvLine, question);
-                                question.setTranslations(translations);
-
-                                List<Answer> answers = getAnswerTranslationsFromCSV(csvLine, question);
-                                question.setAnswers(answers);
-
-                                return question;
-                            }
-                    )
-                    .collect(Collectors.toList());
+            return getQuestions(csvToBean);
         } catch (IOException e) {
             throw new RuntimeException("CSV data is failed to parse: " + e.getMessage());
         }
+    }
+
+    private List<Question> getQuestions(CsvToBean<QuestionCSVRepresentation> csvToBean) {
+        return csvToBean.parse()
+                .stream()
+                .map(csvLine -> {
+                            Question question = Question.builder()
+                                    .id(Long.valueOf(csvLine.getId()))
+                                    .name(csvLine.getName())
+                                    .type(QuestionType.valueOf(csvLine.getType()))
+                                    .media(csvLine.getMediaName())
+                                    .value(csvLine.getValue())
+                                    .build();
+
+                            List<Category> categories = getCategoriesFromCSV(csvLine);
+                            question.setCategories(categories);
+
+                            List<QuestionTranslation> translations = mapQuestionTranslations(csvLine, question);
+                            question.setTranslations(translations);
+
+                            List<Answer> answers = getAnswerTranslationsFromCSV(csvLine, question);
+                            question.setAnswers(answers);
+
+                            return question;
+                        }
+                )
+                .collect(Collectors.toList());
     }
 
     private List<Category> getCategoriesFromCSV(QuestionCSVRepresentation csvLine) {
