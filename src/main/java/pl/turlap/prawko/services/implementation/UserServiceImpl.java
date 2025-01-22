@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.RegisterDto;
+import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.mappers.RoleMapper;
 import pl.turlap.prawko.mappers.UserMapper;
@@ -64,18 +65,36 @@ public class UserServiceImpl implements UserService {
             user.getRoles().clear();
             userRepository.delete(user);
             return ResponseEntity.ok("User deleted successfully.");
-        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
     }
 
     @Override
-    public ResponseEntity<String> promoteUser(Long id) {
-        Optional<User> userToPromote = userRepository.findById(id);
-        if (userToPromote.isPresent()) {
-            User user = userToPromote.get();
-            user.getRoles().add(roleRepository.findByName("ADMIN"));
+    public ResponseEntity<String> changeRoles(Long id, RoleDto roleDto) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            switch (roleDto.getName()) {
+                case "ADMIN" -> {
+                    if (!user.getRoles().contains(roleRepository.findByName("ADMIN"))) {
+                        user.getRoles().add(roleRepository.findByName("ADMIN"));
+                    }
+                }
+                case "USER" -> {
+                    if (user.getRoles().contains(roleRepository.findByName("ADMIN"))) {
+                        user.getRoles().remove(1);
+                    }
+                }
+                default -> {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Role not found.");
+                }
+            }
             userRepository.save(user);
-            return ResponseEntity.ok("User promoted.");
-        } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+            return ResponseEntity.ok("User roles changed.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }
     }
 
     @Override

@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.turlap.prawko.dto.RegisterDto;
+import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.services.UserService;
@@ -53,9 +54,9 @@ public class UserController {
         return userService.editUser(userDto);
     }
 
-    @RequestMapping(path = "/promote/{id}", method = RequestMethod.PATCH)
-    public ResponseEntity<String> promoteUser(@PathVariable("id") Long id) {
-        return userService.promoteUser(id);
+    @RequestMapping(path = "/roles/{userId}", method = RequestMethod.PATCH, consumes = "application/json")
+    public ResponseEntity<String> changeRoles(@PathVariable("userId") Long userId, @RequestBody RoleDto roleDto) {
+        return userService.changeRoles(userId, roleDto);
     }
 
     @PostMapping("/save")
@@ -83,6 +84,5 @@ public class UserController {
         userService.saveUser(registerDto);
         return "redirect:/register?success";
     }
-
 
 }
