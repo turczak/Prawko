@@ -7,11 +7,11 @@ import pl.turlap.prawko.models.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByUsername(String username);
+    User findByUserName(String userName);
 
     User findByEmail(String email);
 
-    Boolean existsByUsername(String username);
+    Boolean existsByUserName(String userName);
 
     Boolean existsByEmail(String email);
 

@@ -1,66 +1,84 @@
 <!DOCTYPE html>
-<html lang="en"
-      xmlns:th="http://www.thymeleaf.org"
->
+<html lang="pl"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
 <head>
-    <meta charset="UTF-8">
-    <title>System do wykonywania testów egzaminacyjncyh na prawo jazdy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-          rel="stylesheet"
-          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-          crossorigin="anonymous">
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Aplikacja do wykonywania testów egzaminacyjnych na prawo jazdy</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
 <body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" th:href="@{/index}">Start</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" th:href="@{/index}">Prawko</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+                    <a class="nav-link active" aria-current="page" href="#">Nowy egzamin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
+                    <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
                 </li>
+
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link active" aria-current="page" href="@{/admin-panel}">Panel administracyjny</a>
+                </li>
+
             </ul>
+            <div class="d-flex align-items-center">
+                <!-- Dropdown -->
+                <div class="dropdown me-2">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLanguageMenu"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <span id="currentLanguage"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguageMenu">
+                        <li><a class="dropdown-item" data-lang="PL" onclick="setLanguage('PL')">🇵🇱 Polski</a></li>
+                        <li><a class="dropdown-item" data-lang="EN" onclick="setLanguage('EN')">🇬🇧 English</a></li>
+                        <li><a class="dropdown-item" data-lang="DE" onclick="setLanguage('DE')">🇩🇪 Deutch</a></li>
+                    </ul>
+                </div>
+                <!-- Logout Button -->
+                <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
+            </div>
         </div>
     </div>
 </nav>
-<br/><br/>
-<div class="container">
-    <div class="row">
-        <h1 class="text-center"> System do wykonywania testów na prawo jazdy </h1>
-    </div>
-    <select id="languageSelect" onchange="setLanguage(this.value)">
-        <option value="PL">Polski</option>
-        <option value="EN">English</option>
-        <option value="DE">Deutsch</option>
-    </select>
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script>
+    // default language
+    let selectedLanguage = 'PL';
 
-    <button onclick="startNewTest()">Nowy test</button>
+    function setLanguage(language){
+        selectedLanguage = language;
+        console.log('Selected language: ' + selectedLanguage);
+        localStorage.setItem('language', selectedLanguage);
 
-    <script>
-        // Zmienna globalna do przechowywania wyboru języka
-        let selectedLanguage = 'PL'; // Domyślnie ustawiamy język polski
+        //update of button label
+        updateLanguageDisplay(language);
+    }
 
-        // Funkcja zmieniająca język
-        function setLanguage(language) {
-            selectedLanguage = language;
-            console.log('Wybrano język: ' + selectedLanguage);
+    function updateLanguageDisplay(language){
+        const languageNames = {
+            PL: '🇵🇱 Polski',
+            EN: '🇬🇧 English',
+            DE: '🇩🇪 Deutch'
         }
 
-        // Funkcja przekierowująca na stronę z nowym testem z wybranym językiem
-        function startNewTest() {
-            const url = `/tests/new?language=${selectedLanguage}`;
-            console.log('Przekierowanie na: ' + url);
-            window.location.href = url;
-        }
-    </script>
-</div>
+        const currentLanguageSpan = document.getElementById('currentLanguage');
+        currentLanguageSpan.textContent = languageNames[language];
+    }
+
+    // set last selected language or default
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedLanguage = localStorage.getItem('language') || 'PL';
+        setLanguage(savedLanguage);
+    });
+</script>
 </body>
 </html>

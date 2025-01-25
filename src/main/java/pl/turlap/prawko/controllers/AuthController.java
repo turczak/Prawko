@@ -30,4 +30,9 @@ public class AuthController {
         return "upload";
     }
 
+    @GetMapping("/tests/new")
+    public String showExam() {
+        return "exam";
+    }
+
 }

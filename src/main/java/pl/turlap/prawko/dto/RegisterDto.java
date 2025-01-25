@@ -5,9 +5,9 @@ import lombok.*;
 @Data
 public class RegisterDto {
 
-    private String firstname;
-    private String lastname;
-    private String username;
+    private String firstName;
+    private String lastName;
+    private String userName;
     private String email;
     private String password;
 

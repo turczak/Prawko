@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -53,8 +54,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByUserName(String username) {
+        return userRepository.findByUserName(username);
     }
 
     @Override
@@ -110,18 +111,19 @@ public class UserServiceImpl implements UserService {
     }
 
     private void restrictedUpdateOfUser(User user, UserDto userDto) {
-        if (userDto.getFirstname() != null && !userDto.getFirstname().isBlank()) {
-            user.setFirstname(userDto.getFirstname());
+        if (userDto.getFirstName() != null && !userDto.getFirstName().isBlank()) {
+            user.setFirstName(userDto.getFirstName());
         }
-        if (userDto.getLastname() != null && !userDto.getLastname().isBlank()) {
-            user.setLastname(userDto.getLastname());
+        if (userDto.getLastName() != null && !userDto.getLastName().isBlank()) {
+            user.setLastName(userDto.getLastName());
         }
-        if (userDto.getUsername() != null && !userDto.getUsername().isBlank() && !userRepository.existsByUsername(userDto.getUsername())) {
-            user.setUsername(userDto.getUsername());
+        if (userDto.getUserName() != null && !userDto.getUserName().isBlank() && !userRepository.existsByUserName(userDto.getUserName())) {
+            user.setUserName(userDto.getUserName());
         }
         if (userDto.getEmail() != null && !userDto.getEmail().isBlank() && !userRepository.existsByEmail(userDto.getEmail())) {
             user.setEmail(userDto.getEmail());
         }
     }
+
 }
 

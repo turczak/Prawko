@@ -16,9 +16,9 @@ public class UserMapper {
 
     public User fromRegisterToUser(RegisterDto registerDto) {
         User user = new User();
-        user.setFirstname(registerDto.getFirstname());
-        user.setLastname(registerDto.getLastname());
-        user.setUsername(registerDto.getUsername());
+        user.setFirstName(registerDto.getFirstName());
+        user.setLastName(registerDto.getLastName());
+        user.setUserName(registerDto.getUserName());
         user.setEmail(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
         user.setRoles(roleMapper.roleForNewUser());
@@ -29,10 +29,10 @@ public class UserMapper {
     public UserDto mapToUserDto(User user) {
         return UserDto.builder()
                 .id(user.getId())
-                .firstname(user.getFirstname())
-                .lastname(user.getLastname())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
-                .username(user.getUsername())
+                .userName(user.getUserName())
                 .createdOn(user.getCreatedOn())
                 .updatedOn(user.getUpdatedOn())
                 .enabled(user.getEnabled())

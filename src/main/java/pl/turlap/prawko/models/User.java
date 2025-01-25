@@ -18,13 +18,13 @@ public class User {
     private Long id;
 
     @Column(name = "first_name", columnDefinition = "VARCHAR(25)")
-    private String firstname;
+    private String firstName;
 
     @Column(name = "last_name", columnDefinition = "VARCHAR(50)")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "user_name", columnDefinition = "VARCHAR(25)")
-    private String username;
+    private String userName;
 
     @Column(name = "email", columnDefinition = "VARCHAR(50)")
     private String email;

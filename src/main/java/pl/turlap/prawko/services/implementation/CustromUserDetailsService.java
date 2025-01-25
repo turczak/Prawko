@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class CustromUserDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public CustromUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -23,21 +23,20 @@ public class CustromUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(login);
+        User user = userRepository.findByUserName(login);
 
         if (user == null) {
             user = userRepository.findByEmail(login);
         }
 
         if (user != null) {
-            return new org.springframework.security.core.userdetails.User(user.getUsername(),
+            return new org.springframework.security.core.userdetails.User(user.getUserName(),
                     user.getPassword(),
                     mapRolesToAuthorities(user.getRoles()));
         } else {
             throw new UsernameNotFoundException("Invalid login or password.");
         }
     }
-
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         Collection<? extends GrantedAuthority> mapRoles = roles.stream()

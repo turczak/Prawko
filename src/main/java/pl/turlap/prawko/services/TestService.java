@@ -1,9 +1,11 @@
 package pl.turlap.prawko.services;
 
-import org.springframework.http.ResponseEntity;
+import pl.turlap.prawko.dto.QuestionDto;
+import pl.turlap.prawko.models.Language;
+import java.util.List;
 
 public interface TestService {
 
-    ResponseEntity<String> generateTest(Long userId);
+    List<QuestionDto> generateTest(Long userId, Language language);
 
 }

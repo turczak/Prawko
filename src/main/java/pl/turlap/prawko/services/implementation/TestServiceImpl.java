@@ -1,9 +1,7 @@
 package pl.turlap.prawko.services.implementation;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.QuestionDto;
 import pl.turlap.prawko.mappers.QuestionMapper;
@@ -29,29 +27,28 @@ public class TestServiceImpl implements TestService {
     private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<String> generateTest(Long userId) {
-        Optional<User> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            List<Question> basicQuestions = generateBasicQuestions();
-            List<Question> specialQuestions = generateSpecialQuestions();
+    public List<QuestionDto> generateTest(Long userId, Language language) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        List<Question> basicQuestions = generateBasicQuestions();
+        List<Question> specialQuestions = generateSpecialQuestions();
 
-            List<Question> allQuestions = Stream.of(basicQuestions,
-                            specialQuestions
-                    )
-                    .flatMap(Collection::stream)
-                    .toList();
+        List<Question> allQuestions = Stream.of(basicQuestions,
+                        specialQuestions
+                )
+                .flatMap(Collection::stream)
+                .toList();
 
-            Test test = Test.builder()
-                    .user(user)
-                    .createdAt(LocalDateTime.now())
-                    .questions(allQuestions)
-                    .build();
-            user.getTests().add(test);
-            userRepository.save(user);
-            return ResponseEntity.ok("Test created.");
-        }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        Test test = Test.builder()
+                .user(user)
+                .createdAt(LocalDateTime.now())
+                .questions(allQuestions)
+                .build();
+        user.getTests().add(test);
+        userRepository.save(user);
+        return test.getQuestions().stream()
+                .map(question -> questionMapper.mapToQuestionDto(question, language))
+                .toList();
     }
 
     private List<Question> generateSpecialQuestions() {

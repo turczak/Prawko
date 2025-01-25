@@ -70,10 +70,10 @@ public class UserController {
                     "There is already an account registered with the same email");
         }
 
-        User existingUserByUsername = userService.findByUsername(registerDto.getUsername());
+        User existingUserByUsername = userService.findByUserName(registerDto.getUserName());
 
-        if (existingUserByUsername != null && existingUserByUsername.getUsername() != null && !existingUserByUsername.getUsername().isEmpty()) {
-            result.rejectValue("username", null,
+        if (existingUserByUsername != null && existingUserByUsername.getUserName() != null && !existingUserByUsername.getUserName().isEmpty()) {
+            result.rejectValue("userName", null,
                     "There is already an account registered with the same username");
         }
 

@@ -28,8 +28,10 @@ public class SpringSecurity {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
-                        authorize.requestMatchers("/register/**").permitAll()
-                                .requestMatchers("/index").permitAll()
+                        authorize
+                                .requestMatchers("/css/**", "/js/**").permitAll()
+                                .requestMatchers("/register/**").permitAll()
+                                .requestMatchers("/index").hasAuthority("USER")
                                 .requestMatchers("/upload").permitAll()
                                 .requestMatchers("/users/**").permitAll()
                                 .requestMatchers("/questions/**").permitAll()
@@ -43,10 +45,12 @@ public class SpringSecurity {
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
+                                .defaultSuccessUrl("/index", true)
                                 .permitAll()
                 ).logout(
                         logout -> logout
                                 .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                                .logoutSuccessUrl("/register")
                                 .permitAll()
                 );
         return http.build();
