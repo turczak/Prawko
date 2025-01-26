@@ -24,4 +24,6 @@ public interface UserService {
 
     ResponseEntity<String> editUser(UserDto userDto);
 
+    void save(User user);
+
 }

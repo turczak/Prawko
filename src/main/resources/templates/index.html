@@ -18,16 +18,15 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Nowy egzamin</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/tests/new}" id="newExam">Nowy
+                        egzamin</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
                 </li>
-
-                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
-                    <a class="nav-link active" aria-current="page" href="@{/admin-panel}">Panel administracyjny</a>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel administracyjny</a>
                 </li>
-
             </ul>
             <div class="d-flex align-items-center">
                 <!-- Dropdown -->
@@ -51,16 +50,14 @@
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 <script>
-    // default language
-    let selectedLanguage = 'PL';
-
-    function setLanguage(language){
-        selectedLanguage = language;
-        console.log('Selected language: ' + selectedLanguage);
-        localStorage.setItem('language', selectedLanguage);
-
-        //update of button label
-        updateLanguageDisplay(language);
+    function setLanguage(language) {
+            fetch(`/users/setLanguage?languageCode=${language}`)
+                .then(
+                    respone => {
+                        if (respone.ok) {
+                            updateLanguageDisplay(language);
+                        }
+            );
     }
 
     function updateLanguageDisplay(language){
@@ -73,12 +70,6 @@
         const currentLanguageSpan = document.getElementById('currentLanguage');
         currentLanguageSpan.textContent = languageNames[language];
     }
-
-    // set last selected language or default
-    document.addEventListener('DOMContentLoaded', () => {
-        const savedLanguage = localStorage.getItem('language') || 'PL';
-        setLanguage(savedLanguage);
-    });
 </script>
 </body>
 </html>

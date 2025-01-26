@@ -11,9 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
+import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.User;
+import pl.turlap.prawko.repositories.LanguageRepository;
 import pl.turlap.prawko.services.UserService;
 
+import java.security.Principal;
 import java.util.List;
 
 
@@ -21,12 +24,11 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
+    private LanguageRepository languageRepository;
 
     // html view, table with users
     @RequestMapping(path = "/all", method = RequestMethod.GET)
@@ -83,6 +85,23 @@ public class UserController {
         }
         userService.saveUser(registerDto);
         return "redirect:/register?success";
+    }
+
+    @GetMapping("/setLanguage{languageCode}")
+    public ResponseEntity<String> setLanguage(@RequestParam(name = "languageCode") String languageCode,
+                                              Principal principal) {
+        User user = userService.findByUserName(principal.getName());
+        if (user != null) {
+            Language language = languageRepository.findByCode(languageCode);
+            if (language != null) {
+                user.setLanguage(language);
+                userService.save(user);
+                return ResponseEntity.ok().body("Language changed.");
+            } else {
+                return ResponseEntity.badRequest().body("Language not found.");
+            }
+        }
+        return ResponseEntity.badRequest().body("User not found.");
     }
 
 }

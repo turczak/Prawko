@@ -12,6 +12,7 @@ import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.mappers.RoleMapper;
 import pl.turlap.prawko.mappers.UserMapper;
 import pl.turlap.prawko.models.User;
+import pl.turlap.prawko.repositories.LanguageRepository;
 import pl.turlap.prawko.repositories.RoleRepository;
 import pl.turlap.prawko.repositories.UserRepository;
 import pl.turlap.prawko.services.UserService;
@@ -30,10 +31,10 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, LanguageRepository languageRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.userMapper = new UserMapper(passwordEncoder, new RoleMapper(this.roleRepository));
+        this.userMapper = new UserMapper(passwordEncoder, new RoleMapper(roleRepository), languageRepository);
     }
 
     @Override
@@ -108,6 +109,11 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             return ResponseEntity.ok("User updated successfully.");
         } else return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+    }
+
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
     }
 
     private void restrictedUpdateOfUser(User user, UserDto userDto) {
