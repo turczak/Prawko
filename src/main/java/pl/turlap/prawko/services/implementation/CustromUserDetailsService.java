@@ -11,7 +11,6 @@ import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.repositories.UserRepository;
 
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Service
 public class CustromUserDetailsService implements UserDetailsService {
@@ -39,9 +38,8 @@ public class CustromUserDetailsService implements UserDetailsService {
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
-        Collection<? extends GrantedAuthority> mapRoles = roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-        return mapRoles;
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.getName()))
+                .toList();
     }
 }
