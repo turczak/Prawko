@@ -52,13 +52,18 @@
 <script>
     function setLanguage(language) {
             fetch(`/users/setLanguage?languageCode=${language}`)
-                .then(
-                    respone => {
-                        if (respone.ok) {
-                            updateLanguageDisplay(language);
-                        }
-            );
-    }
+                .then(respone => {
+                    if (respone.ok) {
+                        updateLanguageDisplay(language);
+                    } else {
+                        alert("Language not changed.")
+                    }
+                })
+                .catch(error => {
+                    console.error('Error: ', error);
+                }
+                );
+        }
 
     function updateLanguageDisplay(language){
         const languageNames = {
