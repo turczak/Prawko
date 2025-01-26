@@ -26,4 +26,6 @@ public class Language {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "language")
     private List<AnswerTranslation> answerTranslations;
 
+    @OneToMany(mappedBy = "language")
+    private List<User> users;
 }

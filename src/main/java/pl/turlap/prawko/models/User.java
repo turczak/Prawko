@@ -12,6 +12,7 @@ import java.util.List;
 @Entity(name = "user")
 @Data
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", columnDefinition = "INT")
@@ -54,4 +55,9 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Test> tests;
+
+    @ManyToOne
+    @JoinColumn(name = "language_id")
+    private Language language;
+
 }
