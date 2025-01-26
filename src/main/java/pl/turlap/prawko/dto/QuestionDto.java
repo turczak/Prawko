@@ -11,7 +11,7 @@ import java.util.List;
 public class QuestionDto {
 
     private String name;
-    private String questionTranslation;
+    private String translation;
     private List<AnswerDto> answers;
     private String media;
     private QuestionType type;

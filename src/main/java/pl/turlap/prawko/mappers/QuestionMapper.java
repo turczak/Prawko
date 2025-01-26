@@ -43,7 +43,7 @@ public class QuestionMapper {
 
         return QuestionDto.builder()
                 .name(question.getName())
-                .questionTranslation(translatedQuestionContent.getContent())
+                .translation(translatedQuestionContent.getContent())
                 .answers(translatedAnswers)
                 .type(question.getType())
                 .value(question.getValue())
@@ -206,18 +206,50 @@ public class QuestionMapper {
     private List<Answer> mapBasicQuestionAnswers(QuestionCSVRepresentation csvLine, Question question) {
         boolean isCorrectAnswerT = csvLine.getCorrectAnswer().equals('T');
 
-        Answer answer_1 = Answer.builder()
+        Answer answerYes = Answer.builder()
                 .question(question)
                 .label('T')
                 .isCorrect(isCorrectAnswerT)
                 .build();
-        Answer answer_2 = Answer.builder()
+        List<AnswerTranslation> answerYesTranslations = new ArrayList<>();
+
+        Answer answerNo = Answer.builder()
                 .question(question)
                 .label('N')
                 .isCorrect(!isCorrectAnswerT)
                 .build();
+        List<AnswerTranslation> answerNoTranslations = new ArrayList<>();
 
-        return List.of(answer_1, answer_2);
+        for (Language language : languageRepository.findAll()) {
+            AnswerTranslation positiveTranslation = new AnswerTranslation(answerYes, language);
+            AnswerTranslation negativeTranslation = new AnswerTranslation(answerNo, language);
+
+            positiveTranslation.setContent(
+                    switch (language.getCode().toUpperCase()){
+                        case "PL" -> "Tak";
+                        case "EN" -> "Yes";
+                        case "DE" -> "Ja";
+                        default ->
+                                throw new IllegalStateException("Unexpected value: " + language.getCode().toUpperCase());
+                    }
+            );
+            negativeTranslation.setContent(
+                    switch (language.getCode().toUpperCase()){
+                        case "PL" -> "Nie";
+                        case "EN" -> "No";
+                        case "DE" -> "Nein";
+                        default ->
+                                throw new IllegalStateException("Unexpected value: " + language.getCode().toUpperCase());
+                    }
+            );
+            answerYesTranslations.add(positiveTranslation);
+            answerNoTranslations.add(negativeTranslation);
+        }
+
+        answerYes.setTranslations(answerYesTranslations);
+        answerNo.setTranslations(answerNoTranslations);
+
+        return List.of(answerYes, answerNo);
     }
 
 }
