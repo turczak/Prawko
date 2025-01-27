@@ -29,7 +29,7 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center">
-                <!-- Dropdown -->
+                <!-- language dropdown -->
                 <div class="dropdown me-2">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLanguageMenu"
                             data-bs-toggle="dropdown" aria-expanded="false">
@@ -50,6 +50,22 @@
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch("/users/getUserLanguage")
+            .then(response => {
+                if(!response.ok){
+                    throw new Error("Cannot load user language.");
+                }
+                return response.text();
+            })
+            .then(language => {
+                updateLanguageDisplay(language);
+            })
+            .catch(error => {
+                console.error("Error: ", error);
+            })
+    })
+
     function setLanguage(language) {
             fetch(`/users/setLanguage?languageCode=${language}`)
                 .then(respone => {

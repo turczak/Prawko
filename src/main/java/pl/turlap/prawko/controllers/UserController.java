@@ -1,6 +1,7 @@
 package pl.turlap.prawko.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -102,6 +103,15 @@ public class UserController {
             }
         }
         return ResponseEntity.badRequest().body("User not found.");
+    }
+
+    @GetMapping("/getUserLanguage")
+    public ResponseEntity<String> getUserLanguage(Principal principal) {
+        User user = userService.findByUserName(principal.getName());
+        if (user != null && user.getLanguage() != null) {
+            return ResponseEntity.ok(user.getLanguage().getCode().toUpperCase());
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     }
 
 }
