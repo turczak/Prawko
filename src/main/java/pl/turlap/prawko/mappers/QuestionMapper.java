@@ -97,7 +97,7 @@ public class QuestionMapper {
                                     .id(Long.valueOf(csvLine.getId()))
                                     .name(csvLine.getName())
                                     .type(QuestionType.valueOf(csvLine.getType()))
-                                    .media(csvLine.getMediaName())
+                                    .media(csvLine.getMediaName().replaceAll("\\.wmv$", ".webm"))
                                     .value(csvLine.getValue())
                                     .build();
 
