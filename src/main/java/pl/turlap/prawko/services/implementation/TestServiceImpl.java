@@ -27,11 +27,11 @@ public class TestServiceImpl implements TestService {
     private final UserRepository userRepository;
 
     @Override
-    public List<QuestionDto> generateTest(Long userId, Language language) {
+    public List<QuestionDto> generateTest(Long userId, Language language, Category category) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        List<Question> basicQuestions = generateBasicQuestions();
-        List<Question> specialQuestions = generateSpecialQuestions();
+        List<Question> basicQuestions = generateBasicQuestions(category);
+        List<Question> specialQuestions = generateSpecialQuestions(category);
 
         List<Question> allQuestions = Stream.of(basicQuestions,
                         specialQuestions
@@ -51,51 +51,56 @@ public class TestServiceImpl implements TestService {
                 .toList();
     }
 
-    private List<Question> generateSpecialQuestions() {
+    private List<Question> generateSpecialQuestions(Category category) {
 
-        //6 pytań za 3 punkty
-        List<Question> threePoints = questionRepository.findQuestionsByTypeAndValue(QuestionType.SPECJALISTYCZNY, 3);
-        List<Question> threePointsQuestions = selectRandomQuestions(threePoints, 6);
+        List<Question> questions = questionRepository.findAllByCategoryAndType(category, QuestionType.SPECJALISTYCZNY);
 
-        //4 pytania za 2 punkty
-        List<Question> twoPoints = questionRepository.findQuestionsByTypeAndValue(QuestionType.SPECJALISTYCZNY, 2);
-        List<Question> twoPointsQuestions = selectRandomQuestions(twoPoints, 4);
+        // 6 questions with 3 points value
+        List<Question> threePointsQuestions = questions.stream().filter(question -> question.getValue() == 3).toList();
+        List<Question> shuffledThreePointsQuestions = selectRandomQuestions(threePointsQuestions, 6);
 
-        //2 pytania za 1 punkt
-        List<Question> onePoints = questionRepository.findQuestionsByTypeAndValue(QuestionType.SPECJALISTYCZNY, 1);
-        List<Question> onePointsQuestions = selectRandomQuestions(onePoints, 2);
+        // 4 questions with 2 points value
+        List<Question> twoPointsQuestions = questions.stream().filter(question -> question.getValue() == 2).toList();
+        List<Question> shuffledTwoPointsQuestions = selectRandomQuestions(twoPointsQuestions, 4);
 
-        return Stream.of(threePointsQuestions,
-                        twoPointsQuestions,
-                        onePointsQuestions)
+        // 2 questions with 1 points value
+        List<Question> onePointsQuestions = questions.stream().filter(question -> question.getValue() == 1).toList();
+        List<Question> shuffledOnePointsQuestions = selectRandomQuestions(onePointsQuestions, 2);
+
+        return Stream.of(shuffledOnePointsQuestions,
+                        shuffledTwoPointsQuestions,
+                        shuffledThreePointsQuestions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
-    private List<Question> generateBasicQuestions() {
+    private List<Question> generateBasicQuestions(Category category) {
 
-        //10 pytań za 3 punkty
-        List<Question> threePoints = questionRepository.findQuestionsByTypeAndValue(QuestionType.PODSTAWOWY, 3);
-        List<Question> threePointsQuestions = new ArrayList<>(selectRandomQuestions(threePoints, 10));
+        List<Question> questions = questionRepository.findAllByCategoryAndType(category, QuestionType.PODSTAWOWY);
 
-        //6 pytań za 2 punkty
-        List<Question> twoPoints = questionRepository.findQuestionsByTypeAndValue(QuestionType.PODSTAWOWY, 2);
-        List<Question> twoPointsQuestions = new ArrayList<>(selectRandomQuestions(twoPoints, 6));
+        // 10 questions with 3 points value
+        List<Question> threePointsQuestions = questions.stream().filter(question -> question.getValue() == 3).toList();
+        List<Question> shuffledThreePointsQuestions = selectRandomQuestions(threePointsQuestions, 10);
 
-        //4 pytania za 1 punkt
-        List<Question> onePoints = questionRepository.findQuestionsByTypeAndValue(QuestionType.PODSTAWOWY, 1);
-        List<Question> onePointsQuestions = new ArrayList<>(selectRandomQuestions(onePoints, 4));
+        // 6 questions with 2 points value
+        List<Question> twoPointsQuestions = questions.stream().filter(question -> question.getValue() == 2).toList();
+        List<Question> shuffledTwoPointsQuestions = selectRandomQuestions(twoPointsQuestions, 6);
 
-        return Stream.of(threePointsQuestions,
-                        twoPointsQuestions,
-                        onePointsQuestions)
+        // 4 questions with 1 points value
+        List<Question> onePointsQuestions = questions.stream().filter(question -> question.getValue() == 1).toList();
+        List<Question> shuffledOnePointsQuestions = selectRandomQuestions(onePointsQuestions, 4);
+
+        return Stream.of(shuffledOnePointsQuestions,
+                        shuffledTwoPointsQuestions,
+                        shuffledThreePointsQuestions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }
 
     private List<Question> selectRandomQuestions(List<Question> questions, int count) {
-        Collections.shuffle(questions);
-        return questions.subList(0, Math.min(count, questions.size()));
+        List<Question> modifableList = new ArrayList<>(questions);
+        Collections.shuffle(modifableList);
+        return modifableList.subList(0, Math.min(count, modifableList.size()));
     }
 
 }

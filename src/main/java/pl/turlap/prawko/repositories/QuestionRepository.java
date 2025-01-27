@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Question;
 import pl.turlap.prawko.models.QuestionType;
 
@@ -17,5 +18,11 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q FROM question q WHERE q.type = :type")
     List<Question> findAllQuestionsByType(@Param("type") QuestionType type);
+
+    @Query("SELECT q FROM question q " +
+            "JOIN q.categories c " +
+            "WHERE c = :category AND q.type = :type")
+    List<Question> findAllByCategoryAndType(@Param("category") Category category,
+                                            @Param("type") QuestionType type);
 
 }
