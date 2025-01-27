@@ -51,6 +51,33 @@
     <h1>Pytanie <span th:text="${currentPage + 1}"></span> z <span th:text="${totalPages}"></span></h1>
     <div class="card">
         <div class="card-body">
+            <!-- Check if media is empty -->
+            <div th:if="${#strings.isEmpty(question.media)}">
+                <div class="text-center">
+                    <i class="fas fa-image fa-5x"></i>
+                </div>
+            </div>
+
+            <div th:unless="${#strings.isEmpty(question.media)}">
+                <!-- check if media is image -->
+                <div th:if="${#strings.endsWith(question.media, '.jpg') or #strings.endsWith(question.name, '.jpeg')}">
+                    <!-- show image -->
+                    <img th:src="@{'/media/' + ${question.media}}"
+                         class="img-fluid">
+                </div>
+                <!-- check if media is video -->
+                <div th:if="${#strings.endsWith(question.media, '.webm')}">
+                    <!--        show video-->
+                    <div class="embed-responsive embed-responsive-16by9">
+                        <video class="embed-responsive-item"
+                               controls>
+                            <source
+                                    th:src="@{'/media/' + ${question.media}}"
+                                    type="video/webm">
+                        </video>
+                    </div>
+                </div>
+            </div>
             <h3 class="card-text" th:text="${question.translation}"></h3>
             <form method="get" th:action="@{/exam}">
                 <div th:each="answer, iterStat : ${question.answers}">
@@ -60,13 +87,17 @@
                                name="answer"
                                th:id="'answer' + ${iterStat.index}"
                                onchange="toggleButton()">
-                        <label class="form-check-label" th:for="'answer' + ${iterStat.index}"
-                               th:text="${answer.content}"></label>
+                        <label class="form-check-label"
+                               th:for="'answer' + ${iterStat.index}"
+                               th:text="${answer.content}">
+                        </label>
                     </div>
                 </div>
 
                 <!-- Navigation to next question -->
-                <input type="hidden" name="page" th:value="${currentPage + 1}">
+                <input type="hidden"
+                       name="page"
+                       th:value="${currentPage + 1}">
                 <button type="submit"
                         id="nextQuestionButton"
                         class="btn btn-primary mt-3"
