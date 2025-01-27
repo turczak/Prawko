@@ -1,5 +1,6 @@
 package pl.turlap.prawko.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,6 +34,10 @@ public class Answer {
 
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<AnswerTranslation> translations;
+
+    @ManyToMany(mappedBy = "userAnswers")
+    @JsonBackReference
+    private List<Test> tests;
 
     public Answer(Character label, Question question) {
         this.label = label;

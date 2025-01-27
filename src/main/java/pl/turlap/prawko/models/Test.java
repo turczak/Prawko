@@ -38,4 +38,16 @@ public class Test {
     )
     private List<Question> questions;
 
+    @ManyToMany(cascade = CascadeType.ALL)
+    @JsonManagedReference
+    @JoinTable(
+            name = "test_answer",
+            joinColumns = @JoinColumn(name = "test_id"),
+            inverseJoinColumns = @JoinColumn(name = "answer_id")
+    )
+    private List<Answer> userAnswers;
+
+    @Column(name = "is_active", columnDefinition = "BOOLEAN")
+    private Boolean isActive;
+
 }
