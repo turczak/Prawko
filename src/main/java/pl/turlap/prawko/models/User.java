@@ -60,4 +60,8 @@ public class User {
     @JoinColumn(name = "language_id")
     private Language language;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
 }
