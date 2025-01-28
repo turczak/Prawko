@@ -1,11 +1,13 @@
 package pl.turlap.prawko.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import pl.turlap.prawko.dto.RegisterDto;
+import pl.turlap.prawko.models.Category;
+import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
@@ -22,13 +24,32 @@ public class AuthController {
     private UserService userService;
 
     @GetMapping("/index")
-    public String showHomePage(Model model, Principal principal) {
+    public String showHomePage(HttpSession session,
+                               Principal principal,
+                               Model model) {
         model.addAttribute("languages", languageService.findAll());
         model.addAttribute("categories", categoryService.findAll());
 
         User user = userService.findByUserName(principal.getName());
-        model.addAttribute("currentLanguage", user.getLanguage());
-        model.addAttribute("currentCategory", user.getCategory());
+
+        Language currentLanguage = (Language) session.getAttribute("currentLanguage");
+        Category currentCategory = (Category) session.getAttribute("currentCategory");
+
+        if (currentLanguage == null) {
+            if (user != null && user.getLanguage() != null) {
+                currentLanguage = user.getLanguage();
+            }
+            session.setAttribute("currentLanguage", currentLanguage);
+        }
+        model.addAttribute("currentLanguage", currentLanguage);
+
+        if (currentCategory == null) {
+            if (user != null && user.getCategory() != null) {
+                currentCategory = user.getCategory();
+            }
+            session.setAttribute("currentCategory", currentCategory);
+        }
+        model.addAttribute("currentCategory", currentCategory);
 
         return "index";
     }

@@ -29,6 +29,32 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center">
+                <!-- Category choose dropdown form -->
+                <form class="d-flex align-items-center"
+                      method="POST"
+                      th:action="@{/users/setCategory}">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownCategoryMenu"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <span id="currentCategory" th:text="${currentCategory.name}"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="dropdownCategoryMenu">
+                            <li th:each="category : ${categories}">
+                                <!-- Form submit button with category name as value -->
+                                <button type="submit"
+                                        class="dropdown-item"
+                                        th:value="${category.name}"
+                                        name="categoryName">
+                                    <span th:text="${category.name}"></span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
                 <!-- Form dropdown with POST -->
                 <form class="d-flex align-items-center"
                       method="POST"
@@ -61,52 +87,7 @@
         </div>
     </div>
 </nav>
-<br><br><br>
-<!-- available categories -->
-<div class="container mt-5">
-    <div class="card">
-        <div class="card-body">
-            <form id="categoryForm"
-                  method="GET"
-                  th:action="@{/tests/newExam}">
-                <div th:each="category, iterStat : ${categories}">
-                    <div class="form-check">
-                        <input type="radio"
-                               th:id="'category' + ${iterStat.index}"
-                               th:value="${category.name}"
-                               onchange="toggleCategoryButton()"
-                               class="form-check-input"
-                               name="category">
-                        <label class="form-check-label"
-                               th:for="'category' + ${iterStat.index}"
-                               th:text="${category.name}">
-                        </label>
-                    </div>
-                </div>
-                <button id="chooseCategoryButton"
-                class="btn btn-primary mt-3"
-                disabled
-                type="submit">
-                    Rozpocznij egzamin
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
-<script>
-    function setCategory(element){
-        const categoryName = element.getAttribute('data-category');
-
-        const currentCategoryElement = document.getElementById('currentCategory');
-        currentCategoryElement.textContent = categoryName;
-    }
-
-    function toggleCategoryButton(){
-        const chooseCategoryButton = document.getElementById('chooseCategoryButton');
-        chooseCategoryButton.disabled = !document.querySelector('input[name="category"]:checked');
-    }
-</script>
 </body>
 </html>

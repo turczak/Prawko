@@ -1,7 +1,7 @@
 package pl.turlap.prawko.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
+import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.User;
+import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.UserService;
 
@@ -28,6 +30,7 @@ public class UserController {
 
     private UserService userService;
     private LanguageService languageService;
+    private CategoryService categoryService;
 
     // html view, table with users
     @RequestMapping(path = "/all", method = RequestMethod.GET)
@@ -89,37 +92,33 @@ public class UserController {
     @PostMapping("/setLanguage")
     public String setLanguage(@RequestParam(name = "languageCode") String languageCode,
                               Principal principal,
-                              Model model) {
+                              HttpSession session) {
         User user = userService.findByUserName(principal.getName());
         if (user != null) {
             Language language = languageService.findByCode(languageCode);
             if (language != null) {
                 user.setLanguage(language);
                 userService.save(user);
-            } else {
-                model.addAttribute("error", "Language not found.");
+                session.setAttribute("currentLanguage", user.getLanguage());
             }
-        } else {
-            model.addAttribute("error", "User not found.");
         }
-
-        List<Language> languages = languageService.findAll();
-        model.addAttribute("languages", languages);
-
-        if (user != null && user.getLanguage() != null) {
-            model.addAttribute("currentLanguage", user.getLanguage());
-        }
-
-        return "index";
+        return "redirect:/index";
     }
 
-    @GetMapping("/getUserLanguage")
-    public ResponseEntity<String> getUserLanguage(Principal principal) {
+    @PostMapping("/setCategory")
+    public String setCategory(@RequestParam(name = "categoryName") String selectedCategory,
+                              Principal principal,
+                              HttpSession session) {
         User user = userService.findByUserName(principal.getName());
-        if (user != null && user.getLanguage() != null) {
-            return ResponseEntity.ok(user.getLanguage().getCode().toUpperCase());
+        if (user != null) {
+            Category category = categoryService.findByName(selectedCategory);
+            if (category != null) {
+                user.setCategory(category);
+                userService.save(user);
+                session.setAttribute("currentCategory", user.getCategory());
+            }
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        return "redirect:/index";
     }
 
 }
