@@ -1,6 +1,6 @@
 package pl.turlap.prawko.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +14,7 @@ import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.User;
-import pl.turlap.prawko.repositories.LanguageRepository;
+import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.UserService;
 
 import java.security.Principal;
@@ -23,13 +23,11 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
-    @Autowired
     private UserService userService;
-
-    @Autowired
-    private LanguageRepository languageRepository;
+    private LanguageService languageService;
 
     // html view, table with users
     @RequestMapping(path = "/all", method = RequestMethod.GET)
@@ -88,12 +86,12 @@ public class UserController {
         return "redirect:/register?success";
     }
 
-    @GetMapping("/setLanguage{languageCode}")
+    @GetMapping("/setLanguage")
     public ResponseEntity<String> setLanguage(@RequestParam(name = "languageCode") String languageCode,
                                               Principal principal) {
         User user = userService.findByUserName(principal.getName());
         if (user != null) {
-            Language language = languageRepository.findByCode(languageCode);
+            Language language = languageService.findByCode(languageCode);
             if (language != null) {
                 user.setLanguage(language);
                 userService.save(user);
