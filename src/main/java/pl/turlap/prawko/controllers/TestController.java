@@ -25,7 +25,7 @@ public class TestController {
     private final CategoryService categoryService;
     private final AnswerService answerService;
 
-    @GetMapping(path = "/newExam{category}")
+    @GetMapping(path = "/newExam")
     public String newExam(@RequestParam(name = "category") String selectedCategory,
                           HttpSession session,
                           Principal principal) {

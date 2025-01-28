@@ -18,7 +18,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/tests/new}" id="newExam">Nowy
+                    <a class="nav-link active" aria-current="page" th:href="@{/tests/newExam?category=B}" id="newExam">Nowy
                         egzamin</a>
                 </li>
                 <li class="nav-item">
@@ -47,6 +47,38 @@
         </div>
     </div>
 </nav>
+<br><br><br>
+<!-- available categories -->
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <form id="categoryForm"
+                  method="GET"
+                  th:action="@{/tests/newExam}">
+                <div th:each="category, iterStat : ${categories}">
+                    <div class="form-check">
+                        <input type="radio"
+                               th:id="'category' + ${iterStat.index}"
+                               th:value="${category.name}"
+                               onchange="toggleCategoryButton()"
+                               class="form-check-input"
+                               name="category">
+                        <label class="form-check-label"
+                               th:for="'category' + ${iterStat.index}"
+                               th:text="${category.name}">
+                        </label>
+                    </div>
+                </div>
+                <button id="chooseCategoryButton"
+                class="btn btn-primary mt-3"
+                disabled
+                type="submit">
+                    Rozpocznij egzamin
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 <script>
@@ -66,10 +98,17 @@
             })
     })
 
+    function setCategory(element){
+        const categoryName = element.getAttribute('data-category');
+
+        const currentCategoryElement = document.getElementById('currentCategory');
+        currentCategoryElement.textContent = categoryName;
+    }
+
     function setLanguage(language) {
             fetch(`/users/setLanguage?languageCode=${language}`)
-                .then(respone => {
-                    if (respone.ok) {
+                .then(response => {
+                    if (response.ok) {
                         updateLanguageDisplay(language);
                     } else {
                         alert("Language not changed.")
@@ -90,6 +129,11 @@
 
         const currentLanguageSpan = document.getElementById('currentLanguage');
         currentLanguageSpan.textContent = languageNames[language];
+    }
+
+    function toggleCategoryButton(){
+        const chooseCategoryButton = document.getElementById('chooseCategoryButton');
+        chooseCategoryButton.disabled = !document.querySelector('input[name="category"]:checked');
     }
 </script>
 </body>

@@ -6,6 +6,8 @@ import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.repositories.CategoryRepository;
 import pl.turlap.prawko.services.CategoryService;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
@@ -17,4 +19,8 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findByName(category);
     }
 
+    @Override
+    public List<Category> findAll() {
+        return categoryRepository.findAll();
+    }
 }
