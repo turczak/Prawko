@@ -27,4 +27,8 @@ public class Category {
     @ManyToMany(mappedBy = "categories")
     @JsonBackReference
     private List<Question> questions;
+
+    @OneToMany(mappedBy = "category")
+    private List<User> users;
+
 }
