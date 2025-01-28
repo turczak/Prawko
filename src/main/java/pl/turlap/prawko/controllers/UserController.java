@@ -86,21 +86,31 @@ public class UserController {
         return "redirect:/register?success";
     }
 
-    @GetMapping("/setLanguage")
-    public ResponseEntity<String> setLanguage(@RequestParam(name = "languageCode") String languageCode,
-                                              Principal principal) {
+    @PostMapping("/setLanguage")
+    public String setLanguage(@RequestParam(name = "languageCode") String languageCode,
+                              Principal principal,
+                              Model model) {
         User user = userService.findByUserName(principal.getName());
         if (user != null) {
             Language language = languageService.findByCode(languageCode);
             if (language != null) {
                 user.setLanguage(language);
                 userService.save(user);
-                return ResponseEntity.ok().body("Language changed.");
             } else {
-                return ResponseEntity.badRequest().body("Language not found.");
+                model.addAttribute("error", "Language not found.");
             }
+        } else {
+            model.addAttribute("error", "User not found.");
         }
-        return ResponseEntity.badRequest().body("User not found.");
+
+        List<Language> languages = languageService.findAll();
+        model.addAttribute("languages", languages);
+
+        if (user != null && user.getLanguage() != null) {
+            model.addAttribute("currentLanguage", user.getLanguage());
+        }
+
+        return "index";
     }
 
     @GetMapping("/getUserLanguage")

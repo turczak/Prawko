@@ -28,6 +28,7 @@ public class AuthController {
 
         User user = userService.findByUserName(principal.getName());
         model.addAttribute("currentLanguage", user.getLanguage());
+        model.addAttribute("currentCategory", user.getCategory());
 
         return "index";
     }

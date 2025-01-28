@@ -29,18 +29,32 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center">
-                <!-- language dropdown -->
-                <div class="dropdown me-2">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLanguageMenu"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="currentLanguage"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguageMenu">
-                        <li><a class="dropdown-item" data-lang="PL" onclick="setLanguage('PL')">🇵🇱 Polski</a></li>
-                        <li><a class="dropdown-item" data-lang="EN" onclick="setLanguage('EN')">🇬🇧 English</a></li>
-                        <li><a class="dropdown-item" data-lang="DE" onclick="setLanguage('DE')">🇩🇪 Deutch</a></li>
-                    </ul>
-                </div>
+                <!-- Form dropdown with POST -->
+                <form class="d-flex align-items-center"
+                      method="POST"
+                      th:action="@{/users/setLanguage}">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownLanguageMenu"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                            <span id="currentLanguage" th:text="${currentLanguage.icon} + ' ' + ${currentLanguage.code}"></span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="dropdownLanguageMenu">
+                            <li th:each="language : ${languages}">
+                                <!-- Form submit button with language code as value -->
+                                <button type="submit"
+                                        class="dropdown-item"
+                                        th:value="${language.code}"
+                                        name="languageCode">
+                                    <span th:text="${language.icon} + ' ' + ${language.name}"></span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
                 <!-- Logout Button -->
                 <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
             </div>
@@ -82,53 +96,11 @@
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        fetch("/users/getUserLanguage")
-            .then(response => {
-                if(!response.ok){
-                    throw new Error("Cannot load user language.");
-                }
-                return response.text();
-            })
-            .then(language => {
-                updateLanguageDisplay(language);
-            })
-            .catch(error => {
-                console.error("Error: ", error);
-            })
-    })
-
     function setCategory(element){
         const categoryName = element.getAttribute('data-category');
 
         const currentCategoryElement = document.getElementById('currentCategory');
         currentCategoryElement.textContent = categoryName;
-    }
-
-    function setLanguage(language) {
-            fetch(`/users/setLanguage?languageCode=${language}`)
-                .then(response => {
-                    if (response.ok) {
-                        updateLanguageDisplay(language);
-                    } else {
-                        alert("Language not changed.")
-                    }
-                })
-                .catch(error => {
-                    console.error('Error: ', error);
-                }
-                );
-        }
-
-    function updateLanguageDisplay(language){
-        const languageNames = {
-            PL: '🇵🇱 Polski',
-            EN: '🇬🇧 English',
-            DE: '🇩🇪 Deutch'
-        }
-
-        const currentLanguageSpan = document.getElementById('currentLanguage');
-        currentLanguageSpan.textContent = languageNames[language];
     }
 
     function toggleCategoryButton(){

@@ -6,15 +6,19 @@ import org.springframework.stereotype.Component;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.models.User;
-import pl.turlap.prawko.repositories.LanguageRepository;
+import pl.turlap.prawko.services.CategoryService;
+import pl.turlap.prawko.services.LanguageService;
+import pl.turlap.prawko.services.RoleService;
 
 @Component
 @AllArgsConstructor
 public class UserMapper {
 
-    private PasswordEncoder passwordEncoder;
-    private RoleMapper roleMapper;
-    private LanguageRepository languageRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final LanguageService languageService;
+    private final CategoryService categoryService;
+    private final RoleService roleService;
+    private final RoleMapper roleMapper;
 
     public User fromRegisterToUser(RegisterDto registerDto) {
         User user = new User();
@@ -23,9 +27,10 @@ public class UserMapper {
         user.setUserName(registerDto.getUserName());
         user.setEmail(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-        user.setRoles(roleMapper.roleForNewUser());
+        user.setRoles(roleService.roleForNewUser());
         user.setEnabled(true);
-        user.setLanguage(languageRepository.findByCode("PL"));
+        user.setLanguage(languageService.findByCode("PL"));
+        user.setCategory(categoryService.findByName("B"));
         return user;
     }
 

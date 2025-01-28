@@ -1,18 +1,15 @@
 package pl.turlap.prawko.services.implementation;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
-import pl.turlap.prawko.mappers.RoleMapper;
 import pl.turlap.prawko.mappers.UserMapper;
 import pl.turlap.prawko.models.User;
-import pl.turlap.prawko.repositories.LanguageRepository;
 import pl.turlap.prawko.repositories.RoleRepository;
 import pl.turlap.prawko.repositories.UserRepository;
 import pl.turlap.prawko.services.UserService;
@@ -24,18 +21,12 @@ import java.util.stream.Collectors;
 
 
 @Service
+@AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper userMapper;
-
-    @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, LanguageRepository languageRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.userMapper = new UserMapper(passwordEncoder, new RoleMapper(roleRepository), languageRepository);
-    }
 
     @Override
     public void saveUser(RegisterDto registerDto) {
