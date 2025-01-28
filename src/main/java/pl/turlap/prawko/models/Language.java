@@ -20,6 +20,9 @@ public class Language {
     @Column(name = "code", columnDefinition = "VARCHAR(2)")
     private String code;
 
+    @Column(name = "icon", columnDefinition = "VARCHAR(2)")
+    private String icon;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "language")
     private List<QuestionTranslation> questionTranslations;
 
