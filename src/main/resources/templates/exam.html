@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="pl"
-      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
 <head>
     <meta charset="UTF-8" http-equiv="X-UA-Compatible">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Aplikacja do wykonywania testów egzaminacyjnych na prawo jazdy</title>
     <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
+
 <body>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
     <div class="container-fluid">
@@ -24,7 +25,8 @@
                     <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                    <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel administracyjny</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
+                        administracyjny</a>
                 </li>
             </ul>
             <div class="d-flex align-items-center">
@@ -36,7 +38,8 @@
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguageMenu">
                         <li><a class="dropdown-item" data-lang="PL" onclick="setLanguage('PL')">🇵🇱 Polski</a></li>
-                        <li><a class="dropdown-item" data-lang="EN" onclick="setLanguage('EN')">🇬🇧 English</a></li>
+                        <li><a class="dropdown-item" data-lang="EN" onclick="setLanguage('EN')">🇬🇧 English</a>
+                        </li>
                         <li><a class="dropdown-item" data-lang="DE" onclick="setLanguage('DE')">🇩🇪 Deutch</a></li>
                     </ul>
                 </div>
@@ -48,7 +51,6 @@
 </nav>
 
 <div class="container mt-5">
-    <h1>Pytanie <span th:text="${currentPage + 1}"></span> z <span th:text="${totalPages}"></span></h1>
     <div class="card">
         <div class="card-body">
             <!-- Check if media is empty -->
@@ -60,51 +62,39 @@
 
             <div th:unless="${#strings.isEmpty(question.media)}">
                 <!-- check if media is image -->
-                <div th:if="${#strings.endsWith(question.media, '.jpg') or #strings.endsWith(question.name, '.jpeg')}">
+                <div
+                        th:if="${#strings.endsWith(question.media, '.jpg') or #strings.endsWith(question.name, '.jpeg')}">
                     <!-- show image -->
-                    <img th:src="@{'/media/' + ${question.media}}"
-                         class="img-fluid">
+                    <img th:src="@{'/media/' + ${question.media}}" class="img-fluid">
                 </div>
                 <!-- check if media is video -->
                 <div th:if="${#strings.endsWith(question.media, '.webm')}">
                     <!--        show video-->
                     <div class="embed-responsive embed-responsive-16by9">
-                        <video class="embed-responsive-item"
-                               controls>
-                            <source
-                                    th:src="@{'/media/' + ${question.media}}"
-                                    type="video/webm">
+                        <video class="embed-responsive-item" controls>
+                            <source th:src="@{'/media/' + ${question.media}}" type="video/webm">
                         </video>
                     </div>
                 </div>
             </div>
             <h3 class="card-text" th:text="${question.translation}"></h3>
-            <form method="get" th:action="@{/exam}">
+            <form id="answerForm" method="POST" th:action="@{/tests/submitAnswer}">
                 <div th:each="answer, iterStat : ${question.answers}">
                     <div class="form-check">
-                        <input type="radio"
-                               class="form-check-input"
-                               name="answer"
-                               th:id="'answer' + ${iterStat.index}"
-                               onchange="toggleButton()">
+                        <input type="radio" class="form-check-input" name="answer"
+                               th:id="'answer' + ${iterStat.index}" th:value="${answer.id}" onchange="toggleButton()">
                         <label class="form-check-label"
                                th:for="'answer' + ${iterStat.index}"
                                th:text="${answer.content}">
                         </label>
                     </div>
                 </div>
-
-                <!-- Navigation to next question -->
-                <input type="hidden"
-                       name="page"
-                       th:value="${currentPage + 1}">
-                <button type="submit"
-                        id="nextQuestionButton"
+                <button id="nextQuestionButton"
                         class="btn btn-primary mt-3"
-                        disabled>
+                        disabled
+                        type="submit">
                     Następne pytanie
                 </button>
-
             </form>
         </div>
     </div>
@@ -114,21 +104,21 @@
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 <script>
     function setLanguage(language) {
-            fetch(`/users/setLanguage?languageCode=${language}`)
-                .then(respone => {
-                    if (respone.ok) {
-                        updateLanguageDisplay(language);
-                    } else {
-                        alert("Language not changed.")
-                    }
-                })
-                .catch(error => {
-                    console.error('Error: ', error);
+        fetch(`/users/setLanguage?languageCode=${language}`)
+            .then(response => {
+                if (response.ok) {
+                    updateLanguageDisplay(language);
+                } else {
+                    alert("Language not changed.")
                 }
-                );
-        }
+            })
+            .catch(error => {
+                console.error('Error: ', error);
+            }
+            );
+    }
 
-    function updateLanguageDisplay(language){
+    function updateLanguageDisplay(language) {
         const languageNames = {
             PL: '🇵🇱 Polski',
             EN: '🇬🇧 English',
@@ -139,12 +129,11 @@
         currentLanguageSpan.textContent = languageNames[language];
     }
 
-    function toggleButton(){
-        const radios = document.querySelectorAll('input[name="answer"]');
-        const button = document.getElementById('nextQuestionButton');
-        const isAnyChecked = Array.from(radios).some(radio => radio.checked);
-        button.disabled = !isAnyChecked;
+    function toggleButton() {
+        const nextQuestionButton = document.getElementById('nextQuestionButton');
+        nextQuestionButton.disabled = !document.querySelector('input[name="answer"]:checked')
     }
 </script>
 </body>
+
 </html>

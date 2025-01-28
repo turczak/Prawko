@@ -43,6 +43,8 @@ public class TestServiceImpl implements TestService {
                 .user(user)
                 .createdAt(LocalDateTime.now())
                 .questions(allQuestions)
+                .userAnswers(new ArrayList<>())
+                .isActive(true)
                 .build();
         user.getTests().add(test);
         userRepository.save(user);
@@ -72,6 +74,24 @@ public class TestServiceImpl implements TestService {
                         shuffledThreePointsQuestions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Test findActiveUserTest(Long userId) {
+        return testRepository.findActiveUserTest(userId);
+    }
+
+    @Override
+    public void saveTest(Test test) {
+        testRepository.save(test);
+    }
+
+    @Override
+    public void saveUserAnswer(Test test, Answer answer) {
+        if(!test.getUserAnswers().contains(answer)){
+            test.getUserAnswers().add(answer);
+            testRepository.save(test);
+        }
     }
 
     private List<Question> generateBasicQuestions(Category category) {
