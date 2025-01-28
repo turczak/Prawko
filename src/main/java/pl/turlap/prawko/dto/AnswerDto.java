@@ -8,6 +8,7 @@ import lombok.Data;
 @Builder
 public class AnswerDto {
 
+    private Long id;
     private Character label;
     private String content;
 

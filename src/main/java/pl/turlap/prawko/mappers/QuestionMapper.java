@@ -61,6 +61,7 @@ public class QuestionMapper {
                     .orElse(null);
             AnswerDto answerDto = AnswerDto.builder()
                     .label(answer.getLabel())
+                    .id(answer.getId())
                     .build();
             if (answerTranslation != null) {
                 answerDto.setContent(answerTranslation.getContent());
