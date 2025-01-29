@@ -4,10 +4,12 @@ package pl.turlap.prawko.services.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
+import pl.turlap.prawko.exception.UserNotFoundException;
 import pl.turlap.prawko.mappers.UserMapper;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.repositories.RoleRepository;
@@ -16,6 +18,7 @@ import pl.turlap.prawko.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -105,6 +108,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void save(User user) {
         userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User with id " + userId + " not found."));
     }
 
     private void restrictedUpdateOfUser(User user, UserDto userDto) {

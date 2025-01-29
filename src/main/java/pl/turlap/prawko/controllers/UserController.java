@@ -2,6 +2,8 @@ package pl.turlap.prawko.controllers;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -12,6 +14,10 @@ import org.springframework.web.bind.annotation.*;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
+import pl.turlap.prawko.dto.UserPreferencesDto;
+import pl.turlap.prawko.exception.CategoryNotFoundException;
+import pl.turlap.prawko.exception.LanguageNotFoundException;
+import pl.turlap.prawko.exception.UserNotFoundException;
 import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.User;
@@ -119,6 +125,39 @@ public class UserController {
             }
         }
         return "redirect:/index";
+    }
+
+    @PatchMapping("/editPreferences")
+    public ResponseEntity<String> editPreferences(@RequestBody UserPreferencesDto userPreferencesDto) {
+        Long userId = userPreferencesDto.getUserId();
+        String languageCode = userPreferencesDto.getLanguageCode();
+        String categoryName = userPreferencesDto.getCategoryName();
+        boolean categoryUpdated = false;
+        boolean languageUpdated = false;
+        try {
+            User user = userService.findById(userId);
+            if(!languageCode.isBlank()){
+                Language language = languageService.findByCode(languageCode);
+                user.setLanguage(language);
+                languageUpdated = true;
+            }
+            if(!categoryName.isBlank()){
+                Category category = categoryService.findByName(categoryName);
+                user.setCategory(category);
+                categoryUpdated = true;
+            }
+            if (!languageUpdated && !categoryUpdated) {
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("No preferences provided.");
+            }
+            userService.save(user);
+            return ResponseEntity.ok("Preferences updated successfully.");
+        } catch (UserNotFoundException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+        }catch (LanguageNotFoundException exception){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid language code.");
+        }catch (CategoryNotFoundException exception){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category name.");
+        }
     }
 
 }

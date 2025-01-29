@@ -7,6 +7,7 @@ import pl.turlap.prawko.repositories.LanguageRepository;
 import pl.turlap.prawko.services.LanguageService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -16,7 +17,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public Language findByCode(String languageCode) {
-        return languageRepository.findByCode(languageCode);
+        return languageRepository.findByCode(languageCode).orElseThrow(() -> new NoSuchElementException("Language with code " + languageCode + " not found."));
     }
 
     @Override
