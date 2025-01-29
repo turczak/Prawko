@@ -30,17 +30,10 @@ public class AuthController {
                                Model model) {
         UserPreferencesDto preferences = new UserPreferencesDto();
         User user = userService.findByUserName(principal.getName());
-        preferences.setUserId(user.getId());
         model.addAttribute("user", user);
-
-        Language currentLanguage = user.getLanguage();
-        model.addAttribute("currentLanguage", currentLanguage);
-        preferences.setLanguageCode(currentLanguage.getCode());
-
-        Category currentCategory = user.getCategory();
-        model.addAttribute("currentCategory", currentCategory);
-        preferences.setCategoryName(currentCategory.getName());
-
+        preferences.setUserId(user.getId());
+        preferences.setLanguageCode(user.getLanguage().getCode());
+        preferences.setCategoryName(user.getCategory().getName());
         model.addAttribute("languages", languageService.findAll());
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("preferences", preferences);

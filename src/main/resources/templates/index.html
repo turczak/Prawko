@@ -37,9 +37,9 @@
                     <div class="dropdown me-2">
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownCategoryMenu"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="currentCategory" th:with="shortLabel = ${currentCategory.name}"
+                            <span id="currentCategory" th:with="shortLabel = ${user.category.name}"
                                 th:text="${shortLabel}"
-                                th:attr="data-category=${currentCategory.name}, data-short-label=${shortLabel}"></span>
+                                th:attr="data-category=${user.category.name}, data-short-label=${shortLabel}"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCategoryMenu">
                             <li th:each="category : ${categories}">
@@ -55,9 +55,9 @@
                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLanguageMenu"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             <span id="currentLanguage"
-                                th:with="languageLabel = ${currentLanguage.icon} + ' ' + ${currentLanguage.code}"
+                                th:with="languageLabel = ${user.language.icon} + ' ' + ${user.language.code}"
                                 th:text="${languageLabel}"
-                                th:attr="data-language=${currentLanguage.code}, data-label=${languageLabel}">
+                                th:attr="data-language=${user.language.code}, data-label=${languageLabel}">
                             </span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguageMenu">
@@ -81,18 +81,14 @@
     <script>
         function updatePreferences(type, element) {
             const userId = document.getElementById("userId").value;
-            let currentCategorySpan = document.getElementById("currentCategory");
-            let currentLanguageSpan = document.getElementById("currentLanguage");
-            let categoryName = currentCategorySpan.getAttribute("data-category");
-            let languageCode = currentLanguageSpan.getAttribute("data-language");
+            let categoryName = document.getElementById("currentCategory").getAttribute("data-category");
+            let languageCode = document.getElementById("currentLanguage").getAttribute("data-language");
 
             if (type === 'category') {
                 categoryName = element.getAttribute("data-category");
-                currentCategorySpan.textContent = element.getAttribute("data-short-label");
             }
             if (type === 'language') {
                 languageCode = element.getAttribute("data-language");
-                currentLanguageSpan.textContent = element.getAttribute("data-short-label");
             }
 
             const data = {
