@@ -1,23 +1,15 @@
 package pl.turlap.prawko.controllers;
 
-import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.turlap.prawko.dto.RegisterDto;
-import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
-import pl.turlap.prawko.exception.CategoryNotFoundException;
-import pl.turlap.prawko.exception.LanguageNotFoundException;
-import pl.turlap.prawko.exception.UserNotFoundException;
+import pl.turlap.prawko.exception.*;
 import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.User;
@@ -25,11 +17,11 @@ import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.UserService;
 
-import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 
-@Controller
+@RestController
 @RequestMapping("/users")
 @AllArgsConstructor
 public class UserController {
@@ -54,80 +46,33 @@ public class UserController {
     }
 
     @RequestMapping(path = "/delete/{userId}", method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") Long userId) {
-        return userService.deleteUserById(userId);
+    public void deleteUser(@PathVariable("userId") Long userId) {
+        userService.deleteUserById(userId);
     }
 
-    @RequestMapping(path = "/edit/{userId}", method = RequestMethod.PATCH, consumes = "application/json")
-    public ResponseEntity<String> editUser(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
-        userDto.setId(userId);
-        return userService.editUser(userDto);
+//    @RequestMapping(path = "/edit/{userId}", method = RequestMethod.PATCH, consumes = "application/json")
+//    public ResponseEntity<String> editUser(@PathVariable("userId") Long userId, @RequestBody UserDto userDto) {
+//        userDto.setId(userId);
+//        return userService.editUser(userDto);
+//    }
+
+    @PatchMapping(path = "/roles/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void changeRoles(@PathVariable("userId") Long userId, @RequestParam(name = "role") String role) {
+        userService.changeRole(userId, role);
     }
 
-    @RequestMapping(path = "/roles/{userId}", method = RequestMethod.PATCH, consumes = "application/json")
-    public ResponseEntity<String> changeRoles(@PathVariable("userId") Long userId, @RequestBody RoleDto roleDto) {
-        return userService.changeRoles(userId, roleDto);
+    @PostMapping(value = "/save", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, String>> register(@RequestBody RegisterDto registerDto) {
+        userService.register(registerDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "User has been successfully registered."));
     }
 
-    @PostMapping("/save")
-    public String registration(@Validated @ModelAttribute("user") RegisterDto registerDto,
-                               BindingResult result,
-                               Model model) {
-        User existingUserByEmail = userService.findByEmail(registerDto.getEmail());
-
-        if (existingUserByEmail != null && existingUserByEmail.getEmail() != null && !existingUserByEmail.getEmail().isEmpty()) {
-            result.rejectValue("email", null,
-                    "There is already an account registered with the same email");
-        }
-
-        User existingUserByUsername = userService.findByUserName(registerDto.getUserName());
-
-        if (existingUserByUsername != null && existingUserByUsername.getUserName() != null && !existingUserByUsername.getUserName().isEmpty()) {
-            result.rejectValue("userName", null,
-                    "There is already an account registered with the same username");
-        }
-
-        if (result.hasErrors()) {
-            model.addAttribute("user", registerDto);
-            return "/register";
-        }
-        userService.saveUser(registerDto);
-        return "redirect:/register?success";
+    @ExceptionHandler({UserWithUserNameExistsException.class, UserWithEmailExistsException.class})
+    public ResponseEntity<Map<String, String>> handleException(UserAlreadyExistsException exception) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("field", exception.getFieldName(), "message", exception.getMessage()));
     }
 
-    @PostMapping("/setLanguage")
-    public String setLanguage(@RequestParam(name = "languageCode") String languageCode,
-                              Principal principal,
-                              HttpSession session) {
-        User user = userService.findByUserName(principal.getName());
-        if (user != null) {
-            Language language = languageService.findByCode(languageCode);
-            if (language != null) {
-                user.setLanguage(language);
-                userService.save(user);
-                session.setAttribute("currentLanguage", user.getLanguage());
-            }
-        }
-        return "redirect:/index";
-    }
-
-    @PostMapping("/setCategory")
-    public String setCategory(@RequestParam(name = "categoryName") String selectedCategory,
-                              Principal principal,
-                              HttpSession session) {
-        User user = userService.findByUserName(principal.getName());
-        if (user != null) {
-            Category category = categoryService.findByName(selectedCategory);
-            if (category != null) {
-                user.setCategory(category);
-                userService.save(user);
-                session.setAttribute("currentCategory", user.getCategory());
-            }
-        }
-        return "redirect:/index";
-    }
-
-    @PatchMapping("/editPreferences")
+    @PatchMapping(value = "/editPreferences", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> editPreferences(@RequestBody UserPreferencesDto userPreferencesDto) {
         Long userId = userPreferencesDto.getUserId();
         String languageCode = userPreferencesDto.getLanguageCode();
@@ -136,12 +81,12 @@ public class UserController {
         boolean languageUpdated = false;
         try {
             User user = userService.findById(userId);
-            if(!languageCode.isBlank()){
+            if (!languageCode.isBlank()) {
                 Language language = languageService.findByCode(languageCode);
                 user.setLanguage(language);
                 languageUpdated = true;
             }
-            if(!categoryName.isBlank()){
+            if (!categoryName.isBlank()) {
                 Category category = categoryService.findByName(categoryName);
                 user.setCategory(category);
                 categoryUpdated = true;
@@ -149,13 +94,13 @@ public class UserController {
             if (!languageUpdated && !categoryUpdated) {
                 return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("No preferences provided.");
             }
-            userService.save(user);
+            userService.update(user);
             return ResponseEntity.ok("Preferences updated successfully.");
         } catch (UserNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-        }catch (LanguageNotFoundException exception){
+        } catch (LanguageNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid language code.");
-        }catch (CategoryNotFoundException exception){
+        } catch (CategoryNotFoundException exception) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category name.");
         }
     }

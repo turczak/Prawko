@@ -1,31 +1,38 @@
 package pl.turlap.prawko.services;
 
-import org.springframework.http.ResponseEntity;
 import pl.turlap.prawko.dto.RegisterDto;
-import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.dto.UserDto;
+import pl.turlap.prawko.models.Role;
 import pl.turlap.prawko.models.User;
 
 import java.util.List;
 
 public interface UserService {
 
-    ResponseEntity<String> changeRoles(Long id, RoleDto roleDto);
+    void changeRole(Long userId, String newRole);
+
+    List<Role> checkUserRoles(User user);
 
     void saveUser(RegisterDto registerDto);
 
     User findByEmail(String email);
 
-    User findByUserName(String username);
+    User findByUserName(String userName);
 
     List<UserDto> findAllUsers();
 
-    ResponseEntity<String> deleteUserById(Long id);
+    void deleteUserById(Long id);
 
-    ResponseEntity<String> editUser(UserDto userDto);
+    void editUser(UserDto userDto);
 
-    void save(User user);
+    void update(User user);
 
     User findById(Long userId);
+
+    boolean checkIfExist(String UserNameOrEmail);
+
+    boolean checkIfExist(String userName, String email);
+
+    void register(RegisterDto registerDto);
 
 }

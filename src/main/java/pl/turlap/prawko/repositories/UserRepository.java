@@ -4,12 +4,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.turlap.prawko.models.User;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User findByUserName(String userName);
+    Optional<User> findByUserName(String userName);
 
-    User findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     Boolean existsByUserName(String userName);
 

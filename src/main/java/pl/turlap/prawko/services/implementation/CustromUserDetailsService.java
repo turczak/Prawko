@@ -8,27 +8,22 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.models.Role;
 import pl.turlap.prawko.models.User;
-import pl.turlap.prawko.repositories.UserRepository;
+import pl.turlap.prawko.services.UserService;
 
 import java.util.Collection;
 
 @Service
 public class CustromUserDetailsService implements UserDetailsService {
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public CustromUserDetailsService(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustromUserDetailsService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
-        User user = userRepository.findByUserName(login);
-
-        if (user == null) {
-            user = userRepository.findByEmail(login);
-        }
-
-        if (user != null) {
+    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+        if (userService.checkIfExist(userName)) {
+            User user = userService.findByUserName(userName);
             return new org.springframework.security.core.userdetails.User(user.getUserName(),
                     user.getPassword(),
                     mapRolesToAuthorities(user.getRoles()));

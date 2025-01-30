@@ -10,6 +10,8 @@ import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.RoleService;
 
+import java.util.List;
+
 @Component
 @AllArgsConstructor
 public class UserMapper {
@@ -27,7 +29,7 @@ public class UserMapper {
         user.setUserName(registerDto.getUserName());
         user.setEmail(registerDto.getEmail());
         user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
-        user.setRoles(roleService.roleForNewUser());
+        user.setRoles(List.of(roleService.findByName("USER")));
         user.setEnabled(true);
         user.setLanguage(languageService.findByCode("PL"));
         user.setCategory(categoryService.findByName("B"));

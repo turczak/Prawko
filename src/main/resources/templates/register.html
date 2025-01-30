@@ -42,10 +42,10 @@
             </div>
             <div class="card-body">
                 <form
-                    method="post"
-                    role="form"
-                    th:action="@{/users/save}"
-                    th:object="${user}"
+                        method="post"
+                        role="form"
+                        th:action="@{/register}"
+                        th:object="${user}"
                 >
                     <div class="form-group">
                         <label for="firstName">
@@ -127,6 +127,7 @@
     </div>
 </div>
 
-
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>
