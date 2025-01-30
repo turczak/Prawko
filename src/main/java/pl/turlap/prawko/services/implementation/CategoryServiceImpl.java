@@ -2,7 +2,7 @@ package pl.turlap.prawko.services.implementation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.turlap.prawko.exception.CategoryNotFoundException;
+import pl.turlap.prawko.exceptions.CategoryNotFoundException;
 import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.repositories.CategoryRepository;
 import pl.turlap.prawko.services.CategoryService;
@@ -16,8 +16,8 @@ public class CategoryServiceImpl implements CategoryService {
     private final CategoryRepository categoryRepository;
 
     @Override
-    public Category findByName(String category) {
-        return categoryRepository.findByName(category).orElseThrow(() -> new CategoryNotFoundException("Category: " + category + " not found."));
+    public Category findByName(String categoryName) {
+        return categoryRepository.findByName(categoryName).orElseThrow(() -> new CategoryNotFoundException("Category: " + categoryName + " not found."));
     }
 
     @Override

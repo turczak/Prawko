@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
-import pl.turlap.prawko.exception.UserAlreadyExistsException;
+import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
@@ -20,7 +20,7 @@ import java.security.Principal;
 
 @Controller
 @AllArgsConstructor
-public class AuthController {
+public class ViewController {
 
     private final CategoryService categoryService;
     private final LanguageService languageService;
@@ -64,16 +64,11 @@ public class AuthController {
         try {
             userService.register(registerDto);
             return "redirect:/register?success";
-        } catch (UserAlreadyExistsException exception) {
+        } catch (CustomAlreadyExistsException exception) {
             result.rejectValue(exception.getFieldName(), null, exception.getMessage());
             model.addAttribute("user", registerDto);
             return "register";
         }
-    }
-
-    @GetMapping("/questions/upload")
-    public String showUploadForm() {
-        return "upload";
     }
 
 }

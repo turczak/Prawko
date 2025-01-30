@@ -2,12 +2,12 @@ package pl.turlap.prawko.services.implementation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import pl.turlap.prawko.exceptions.LanguageNotFoundException;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.repositories.LanguageRepository;
 import pl.turlap.prawko.services.LanguageService;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class LanguageServiceImpl implements LanguageService {
 
     @Override
     public Language findByCode(String languageCode) {
-        return languageRepository.findByCode(languageCode).orElseThrow(() -> new NoSuchElementException("Language with code " + languageCode + " not found."));
+        return languageRepository.findByCode(languageCode).orElseThrow(() -> new LanguageNotFoundException("Language with code " + languageCode + " not found."));
     }
 
     @Override
