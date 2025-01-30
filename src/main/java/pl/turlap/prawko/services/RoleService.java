@@ -1,19 +1,19 @@
 package pl.turlap.prawko.services;
 
-import org.springframework.http.ResponseEntity;
-import pl.turlap.prawko.dto.RoleDto;
 import pl.turlap.prawko.models.Role;
 
 import java.util.List;
 
 public interface RoleService {
 
-    List<RoleDto> findAll();
+    void save(String name);
 
-    ResponseEntity<String> addNewRole(RoleDto roleDto);
+    List<Role> findAll();
+
+    Role findById(Long id);
 
     Role findByName(String name);
 
-    List<Role> roleForNewUser();
+    void delete(Long id);
 
 }

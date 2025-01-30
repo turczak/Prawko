@@ -1,35 +1,38 @@
 package pl.turlap.prawko.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import pl.turlap.prawko.dto.RoleDto;
+import pl.turlap.prawko.models.Role;
 import pl.turlap.prawko.services.RoleService;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/roles")
+@AllArgsConstructor
 public class RoleController {
 
     private final RoleService roleService;
 
-    @Autowired
-    public RoleController(RoleService roleService) {
-        this.roleService = roleService;
-    }
-
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<RoleDto> findALlRoles() {
+    public List<Role> findALlRoles() {
         return roleService.findAll();
     }
 
-    @PostMapping(path = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<String> addNewRole(@RequestBody RoleDto roleDto) {
-        return roleService.addNewRole(roleDto);
+    @PostMapping(path = "/add")
+    public ResponseEntity<String> addRole(@RequestParam(name = "roleName") String roleName) {
+        roleService.save(roleName);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Role '" + roleName + "' successfully added.");
+    }
+
+    @DeleteMapping(path = "/delete")
+    public ResponseEntity<String> deleteRole(@RequestParam(name = "roleId") Long roleId) {
+        roleService.delete(roleId);
+        return ResponseEntity.status(HttpStatus.OK).body("Role with id '" + roleId + "' successfully deleted.");
     }
 
 }
