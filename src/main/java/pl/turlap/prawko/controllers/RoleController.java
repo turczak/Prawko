@@ -9,6 +9,7 @@ import pl.turlap.prawko.models.Role;
 import pl.turlap.prawko.services.RoleService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/roles")
@@ -24,15 +25,15 @@ public class RoleController {
     }
 
     @PostMapping(path = "/add")
-    public ResponseEntity<String> addRole(@RequestParam(name = "roleName") String roleName) {
+    public ResponseEntity<Map<String, String>> addRole(@RequestParam(name = "roleName") String roleName) {
         roleService.save(roleName);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Role '" + roleName + "' successfully added.");
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", "Role '" + roleName + "' successfully added."));
     }
 
     @DeleteMapping(path = "/delete")
-    public ResponseEntity<String> deleteRole(@RequestParam(name = "roleId") Long roleId) {
+    public ResponseEntity<Map<String, String>> deleteRole(@RequestParam(name = "roleId") Long roleId) {
         roleService.delete(roleId);
-        return ResponseEntity.status(HttpStatus.OK).body("Role with id '" + roleId + "' successfully deleted.");
+        return ResponseEntity.status(HttpStatus.OK).body(Map.of("message", "Role with id '" + roleId + "' successfully deleted."));
     }
 
 }

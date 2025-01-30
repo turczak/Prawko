@@ -25,8 +25,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role findById(Long id) {
-        return roleRepository.findById(id).orElseThrow(() -> new RoleNotFoundException("Role with id '" + id + "' not found."));
+    public Role findById(Long roleId) {
+        return roleRepository.findById(roleId).orElseThrow(() -> new RoleNotFoundException("roleId", "Role with id '" + roleId + "' not found."));
     }
 
     @Override
@@ -38,8 +38,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void delete(Long id) {
-        Role role = findById(id);
+    public void delete(Long roleId) {
+        Role role = findById(roleId);
         for (User user : role.getUsers()) {
             user.getRoles().remove(role);
         }
@@ -47,8 +47,8 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Role findByName(String name) {
-        return roleRepository.findByName(name).orElseThrow(() -> new RoleNotFoundException("Role with name '" + name + "' not found."));
+    public Role findByName(String roleName) {
+        return roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(roleName, "Role with name '" + roleName + "' not found."));
     }
 
 }
