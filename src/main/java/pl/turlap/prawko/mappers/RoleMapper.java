@@ -15,7 +15,7 @@ public class RoleMapper {
     }
 
     public Role fromDtoToRole(String roleName) {
-        return Role.builder().name(roleName.toUpperCase()).build();
+        return new Role().withName(roleName);
     }
 
 }
