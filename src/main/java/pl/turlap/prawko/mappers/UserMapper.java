@@ -46,7 +46,7 @@ public class UserMapper {
                 .createdOn(user.getCreatedOn())
                 .updatedOn(user.getUpdatedOn())
                 .enabled(user.getEnabled())
-                .roles(roleMapper.toRoleDto(user.getRoles()))
+                .roles(roleMapper.toRoleDtos(user.getRoles()))
                 .build();
     }
 

@@ -9,7 +9,6 @@ import java.util.List;
 @Data
 @Builder
 public class UserDto {
-
     private Long id;
     private String firstName;
     private String lastName;
@@ -18,6 +17,5 @@ public class UserDto {
     private Boolean enabled;
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
-    private List<RoleDto> roles;
-
+    private List<String> roles;
 }
