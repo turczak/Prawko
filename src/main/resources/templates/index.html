@@ -9,111 +9,84 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" th:href="@{/index}">Prawko</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/index}">Prawko</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav me-auto mb-2 mb-md-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" th:href="@{/tests/newExam?category=B}"
-                            id="newExam">Nowy
-                            egzamin</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
-                    </li>
-                    <li class="nav-item" sec:authorize="hasRole('ADMIN')">
-                        <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
-                            administracyjny</a>
-                    </li>
-                </ul>
-                <div class="d-flex align-items-center">
-                    <input type="hidden" id="userId" th:value="${user.id}">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/tests/newExam?category=B}"
+                       id="newExam">Nowy
+                        egzamin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
+                        administracyjny</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <form class="d-flex align-items-center" th:action="@{/editPreferences}" th:object="${preferences}"
+                      method="POST">
+                    <input type="hidden" th:field="*{userId}">
                     <!-- Category -->
                     <div class="dropdown me-2">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownCategoryMenu"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="currentCategory" th:with="shortLabel = ${user.category.name}"
-                                th:text="${shortLabel}"
-                                th:attr="data-category=${user.category.name}, data-short-label=${shortLabel}"></span>
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownCategoryMenu"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <span th:text="${shortLabel}"
+                                      th:with="shortLabel = ${user.category.name}"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCategoryMenu">
                             <li th:each="category : ${categories}">
-                                <a class="dropdown-item" th:with="shortLabel = ${category.name}" th:text="${shortLabel}"
-                                    th:attr="data-category=${category.name}, data-short-label=${shortLabel}"
-                                    th:onclick="|updatePreferences('category', this)|">
-                                </a>
+                                <button class="dropdown-item"
+                                        type="submit"
+                                        name="categoryName"
+                                        th:text="${shortLabel}"
+                                        th:value="${category.name}"
+                                        th:with="shortLabel = ${category.name}">
+                                </button>
                             </li>
                         </ul>
                     </div>
                     <!-- Language -->
                     <div class="dropdown me-2">
-                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLanguageMenu"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="currentLanguage"
-                                th:with="languageLabel = ${user.language.icon} + ' ' + ${user.language.code}"
-                                th:text="${languageLabel}"
-                                th:attr="data-language=${user.language.code}, data-label=${languageLabel}">
-                            </span>
+                        <button class="btn btn-secondary dropdown-toggle"
+                                type="button"
+                                id="dropdownLanguageMenu"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <span th:with="languageLabel = ${user.language.icon} + ' ' + ${user.language.code}"
+                                      th:text="${languageLabel}"></span>
                         </button>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguageMenu">
                             <li th:each="language : ${languages}">
-                                <a class="dropdown-item" th:with="fullLabel = ${language.icon} + ' ' + ${language.name},
-                                    shortLabel=${language.icon} + ' ' + ${language.code}" th:text="${fullLabel}"
-                                    th:attr="data-language=${language.code}, data-icon=${language.icon}, data-full-label=${fullLabel}, data-short-label=${shortLabel}"
-                                    th:onclick="|updatePreferences('language', this)|">
-                                </a>
+                                <button class="dropdown-item"
+                                        type="submit"
+                                        name="languageCode"
+                                        th:text="${fullLabel}"
+                                        th:value="${language.code}"
+                                        th:with="fullLabel = ${language.icon} + ' ' + ${language.name}, shortLabel=${language.icon} + ' ' + ${language.code}">
+                                </button>
                             </li>
                         </ul>
                     </div>
-                    <!-- Logout Button -->
-                    <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
-                </div>
+                </form>
+                <!-- Logout Button -->
+                <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
             </div>
         </div>
-    </nav>
-    <!-- Bootstrap JS -->
-    <script th:src="@{/js/bootstrap.bundle.js}"></script>
-    <script>
-        function updatePreferences(type, element) {
-            const userId = document.getElementById("userId").value;
-            let categoryName = document.getElementById("currentCategory").getAttribute("data-category");
-            let languageCode = document.getElementById("currentLanguage").getAttribute("data-language");
-
-            if (type === 'category') {
-                categoryName = element.getAttribute("data-category");
-            }
-            if (type === 'language') {
-                languageCode = element.getAttribute("data-language");
-            }
-
-            const data = {
-                userId: userId,
-                categoryName: categoryName,
-                languageCode: languageCode
-            };
-
-            fetch("users/editPreferences", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            }).then(result => {
-                if (result.status === "error") {
-                    console.error("Error: " + result.message);
-                } else {
-                    console.log("Preferences updated.");
-                    location.reload();
-                }
-            })
-                .catch(error => console.error("Error: ", error));
-        }
-    </script>
+    </div>
+</nav>
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
-
 </html>

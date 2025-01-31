@@ -14,8 +14,6 @@ public interface UserService {
 
     List<Role> checkUserRoles(User user);
 
-    void saveUser(RegisterDto registerDto);
-
     User findByEmail(String email);
 
     User findByUserName(String userName);

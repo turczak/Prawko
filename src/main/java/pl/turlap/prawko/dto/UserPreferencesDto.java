@@ -1,8 +1,10 @@
 package pl.turlap.prawko.dto;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@Data
+@AllArgsConstructor
+@Getter
 public class UserPreferencesDto {
     private Long userId;
     private String languageCode;

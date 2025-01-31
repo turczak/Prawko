@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
 import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
+import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
@@ -29,15 +30,15 @@ public class ViewController {
     @GetMapping("/index")
     public String showHomePage(Principal principal,
                                Model model) {
-        UserPreferencesDto preferences = new UserPreferencesDto();
         User user = userService.findByUserName(principal.getName());
+        model.addAttribute("preferences",
+                new UserPreferencesDto(
+                        user.getId(),
+                        user.getCategory().getName(),
+                        user.getLanguage().getCode()));
         model.addAttribute("user", user);
-        preferences.setUserId(user.getId());
-        preferences.setLanguageCode(user.getLanguage().getCode());
-        preferences.setCategoryName(user.getCategory().getName());
         model.addAttribute("languages", languageService.findAll());
         model.addAttribute("categories", categoryService.findAll());
-        model.addAttribute("preferences", preferences);
         return "index";
     }
 
@@ -68,6 +69,16 @@ public class ViewController {
             result.rejectValue(exception.getFieldName(), null, exception.getMessage());
             model.addAttribute("user", registerDto);
             return "register";
+        }
+    }
+
+    @PostMapping("/editPreferences")
+    public String editPreferences(@ModelAttribute(name = "preferences") UserPreferencesDto preferencesDto) {
+        try {
+            userService.updatePreferences(preferencesDto);
+            return "redirect:/index?success";
+        } catch (CustomNotFoundException exception) {
+            return "index";
         }
     }
 

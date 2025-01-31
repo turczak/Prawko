@@ -38,17 +38,11 @@ public class UserServiceImpl implements UserService {
     private final CategoryService categoryService;
 
     @Override
-    public void saveUser(RegisterDto registerDto) {
-        User userToSave = userMapper.fromRegisterToUser(registerDto);
-        userRepository.save(userToSave);
-    }
-
-    @Override
     public void register(RegisterDto registerDto) {
         if (checkIfExist(registerDto.getUserName())) {
             throw new UserNameAlreadyExistsException("User with username '" + registerDto.getUserName() + "' already exists.");
         } else if (checkIfExist(registerDto.getEmail())) {
-            throw new EmailAlreadyExistsException("User with email: " + registerDto.getEmail() + " already exists.");
+            throw new EmailAlreadyExistsException("User with email '" + registerDto.getEmail() + "' already exists.");
         }
         User user = userMapper.fromRegisterToUser(registerDto);
         userRepository.save(user);
@@ -62,12 +56,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email, "User with email: " + email + " not found."));
+        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email, "User with email '" + email + "' not found."));
     }
 
     @Override
     public User findByUserName(String userName) {
-        return userRepository.findByUserName(userName).orElseThrow(() -> new UserNotFoundException("userName", "User with username: " + userName + " not found."));
+        return userRepository.findByUserName(userName).orElseThrow(() -> new UserNotFoundException("userName", "User with username '" + userName + "' not found."));
     }
 
     @Override
@@ -153,11 +147,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updatePreferences(UserPreferencesDto userPreferencesDto) {
         User user = findById(userPreferencesDto.getUserId());
-        if (!userPreferencesDto.getLanguageCode().isBlank()) {
+        if (userPreferencesDto.getLanguageCode() != null && !userPreferencesDto.getLanguageCode().isBlank()) {
             Language language = languageService.findByCode(userPreferencesDto.getLanguageCode());
             user.setLanguage(language);
         }
-        if (!userPreferencesDto.getCategoryName().isBlank()) {
+        if (userPreferencesDto.getCategoryName() != null && !userPreferencesDto.getCategoryName().isBlank()) {
             Category category = categoryService.findByName(userPreferencesDto.getCategoryName());
             user.setCategory(category);
         }
