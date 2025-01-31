@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import pl.turlap.prawko.exceptions.*;
-import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
-import pl.turlap.prawko.exceptions.CustomNotFoundException;
 
 import java.util.Map;
 
-@ControllerAdvice(annotations = RestController.class)
+@ControllerAdvice(annotations = RestController.class, assignableTypes = ViewController.class)
 public class ExceptionController {
 
     @ExceptionHandler({UserNameAlreadyExistsException.class, EmailAlreadyExistsException.class, UserAlreadyExistsException.class, RoleAlreadyExistsException.class})
