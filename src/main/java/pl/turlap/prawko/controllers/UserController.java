@@ -4,12 +4,19 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
-import pl.turlap.prawko.services.CategoryService;
-import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.UserService;
 
 import java.util.List;
@@ -22,13 +29,17 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final LanguageService languageService;
-    private final CategoryService categoryService;
 
     @GetMapping(path = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     public List<UserDto> showAllUsers() {
         return userService.findAllUsers();
+    }
+
+    @PatchMapping(path = "/edit")
+    public ResponseEntity<Map<String, String>> editUser(@RequestBody UserDto userDto) {
+        userService.editUser(userDto);
+        return ResponseEntity.ok(Map.of("message", "User edited."));
     }
 
     @DeleteMapping(path = "/delete{userId}")

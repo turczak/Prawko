@@ -30,19 +30,6 @@
                 </li>
             </ul>
             <div class="d-flex align-items-center">
-                <!-- Dropdown -->
-                <div class="dropdown me-2">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownLanguageMenu"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                        <span id="currentLanguage"></span>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownLanguageMenu">
-                        <li><a class="dropdown-item" data-lang="PL" onclick="setLanguage('PL')">🇵🇱 Polski</a></li>
-                        <li><a class="dropdown-item" data-lang="EN" onclick="setLanguage('EN')">🇬🇧 English</a>
-                        </li>
-                        <li><a class="dropdown-item" data-lang="DE" onclick="setLanguage('DE')">🇩🇪 Deutch</a></li>
-                    </ul>
-                </div>
                 <!-- Logout Button -->
                 <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
             </div>
@@ -78,7 +65,7 @@
                 </div>
             </div>
             <h3 class="card-text" th:text="${question.translation}"></h3>
-            <form id="answerForm" method="POST" th:action="@{/tests/submitAnswer}">
+            <form id="answerForm" method="POST" th:action="@{/submitAnswer}">
                 <div th:each="answer, iterStat : ${question.answers}">
                     <div class="form-check">
                         <input type="radio" class="form-check-input" name="answer"
@@ -103,32 +90,6 @@
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.js}"></script>
 <script>
-    function setLanguage(language) {
-        fetch(`/users/setLanguage?languageCode=${language}`)
-            .then(response => {
-                if (response.ok) {
-                    updateLanguageDisplay(language);
-                } else {
-                    alert("Language not changed.")
-                }
-            })
-            .catch(error => {
-                console.error('Error: ', error);
-            }
-            );
-    }
-
-    function updateLanguageDisplay(language) {
-        const languageNames = {
-            PL: '🇵🇱 Polski',
-            EN: '🇬🇧 English',
-            DE: '🇩🇪 Deutch'
-        }
-
-        const currentLanguageSpan = document.getElementById('currentLanguage');
-        currentLanguageSpan.textContent = languageNames[language];
-    }
-
     function toggleButton() {
         const nextQuestionButton = document.getElementById('nextQuestionButton');
         nextQuestionButton.disabled = !document.querySelector('input[name="answer"]:checked')

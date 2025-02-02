@@ -1,33 +1,60 @@
 <!DOCTYPE html>
-<html lang="pl"
-      xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
 <head>
-  <meta charset="UTF-8" http-equiv="X-UA-Compatible">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Aplikacja do wykonywania testów egzaminacyjnych na prawo jazdy</title>
-  <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Aplikacja do wykonywania testów egzaminacyjnych na prawo jazdy</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
 </head>
+
 <body>
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" th:href="@{/index}">Prawko</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarCollapse">
-      <ul class="navbar-nav me-auto mb-2 mb-md-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Nowy egzamin</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
-        </li>
-      </ul>
-      <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/index}">Prawko</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" th:href="@{/tests/newExam?category=B}"
+                       id="newExam">Nowy
+                        egzamin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
+                        administracyjny</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <!-- Logout Button -->
+                <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
+            </div>
+        </div>
     </div>
-  </div>
 </nav>
+<br><br><br>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <h2>Choose CSV file to upload</h2>
+            <p th:text="${message}" th:if="${message ne null}" class="alert alert-primary"></p>
+            <form method="post" th:action="@{/admin-panel/upload}" enctype="multipart/form-data">
+                <div class="form-group">
+                    <input type="file" name="file" accept="text/csv" class="multipart/form-data">
+                </div>
+                <button type="submit" class="btn btn-primary">Upload file</button>
+            </form>
+            <span th:if="${msg != null}" th:text="${msg}"></span>
+        </div>
+    </div>
+</div>
 <!-- Bootstrap JS -->
-<script th:src="@{/js/bootstrap.js}"></script>
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
 </body>
 </html>
