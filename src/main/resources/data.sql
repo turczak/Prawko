@@ -17,8 +17,8 @@ VALUES
 ('D1'),
 ('T');
 
-INSERT INTO language (code, name)
+INSERT INTO language (code, name, icon)
 VALUES
-('PL', 'polish'),
-('EN', 'english'),
-('DE', 'german');
+('PL', 'polish', '🇵🇱'),
+('EN', 'english', '🇬🇧'),
+('DE', 'german', '🇩🇪');
