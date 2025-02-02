@@ -2,8 +2,8 @@ package pl.turlap.prawko.services.implementation;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import pl.turlap.prawko.exceptions.RoleAlreadyExistsException;
-import pl.turlap.prawko.exceptions.RoleNotFoundException;
+import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
+import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.mappers.RoleMapper;
 import pl.turlap.prawko.models.Role;
 import pl.turlap.prawko.models.User;
@@ -26,13 +26,13 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findById(Long roleId) {
-        return roleRepository.findById(roleId).orElseThrow(() -> new RoleNotFoundException("roleId", "Role with id '" + roleId + "' not found."));
+        return roleRepository.findById(roleId).orElseThrow(() -> new CustomNotFoundException("roleId", "Role with id '" + roleId + "' not found."));
     }
 
     @Override
     public void save(String roleName) {
         if (roleRepository.findByName(roleName).isPresent()) {
-            throw new RoleAlreadyExistsException("Role '" + roleName + "' already exists.");
+            throw new CustomAlreadyExistsException("roleName", "Role '" + roleName + "' already exists.");
         }
         roleRepository.save(roleMapper.fromDtoToRole(roleName));
     }
@@ -48,7 +48,7 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public Role findByName(String roleName) {
-        return roleRepository.findByName(roleName).orElseThrow(() -> new RoleNotFoundException(roleName, "Role with name '" + roleName + "' not found."));
+        return roleRepository.findByName(roleName).orElseThrow(() -> new CustomNotFoundException(roleName, "Role with name '" + roleName + "' not found."));
     }
 
 }

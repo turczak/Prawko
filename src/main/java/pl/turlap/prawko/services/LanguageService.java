@@ -10,4 +10,6 @@ public interface LanguageService {
 
     Language findByCode(String languageCode);
 
+    Language findByNameOrCode(String nameOrCode);
+
 }

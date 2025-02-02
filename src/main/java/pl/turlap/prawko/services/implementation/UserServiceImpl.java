@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.UserDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
-import pl.turlap.prawko.exceptions.RoleNotFoundException;
-import pl.turlap.prawko.exceptions.EmailAlreadyExistsException;
-import pl.turlap.prawko.exceptions.UserNameAlreadyExistsException;
-import pl.turlap.prawko.exceptions.UserNotFoundException;
+import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
+import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.mappers.UserMapper;
 import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Language;
@@ -23,7 +21,6 @@ import pl.turlap.prawko.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -40,9 +37,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void register(RegisterDto registerDto) {
         if (checkIfExist(registerDto.getUserName())) {
-            throw new UserNameAlreadyExistsException("User with username '" + registerDto.getUserName() + "' already exists.");
+            throw new CustomAlreadyExistsException("userName", "User with username '" + registerDto.getUserName() + "' already exists.");
         } else if (checkIfExist(registerDto.getEmail())) {
-            throw new EmailAlreadyExistsException("User with email '" + registerDto.getEmail() + "' already exists.");
+            throw new CustomAlreadyExistsException("email", "User with email '" + registerDto.getEmail() + "' already exists.");
         }
         User user = userMapper.fromRegisterToUser(registerDto);
         userRepository.save(user);
@@ -56,17 +53,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException(email, "User with email '" + email + "' not found."));
+        return userRepository.findByEmail(email).orElseThrow(() -> new CustomNotFoundException(email, "User with email '" + email + "' not found."));
     }
 
     @Override
     public User findByUserName(String userName) {
-        return userRepository.findByUserName(userName).orElseThrow(() -> new UserNotFoundException("userName", "User with username '" + userName + "' not found."));
+        return userRepository.findByUserName(userName).orElseThrow(() -> new CustomNotFoundException("userName", "User with username '" + userName + "' not found."));
     }
 
     @Override
     public void delete(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId", "User with id '" + userId + "' not found."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("userId", "User with id '" + userId + "' not found."));
         user.getRoles().clear();
         userRepository.delete(user);
     }
@@ -83,7 +80,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void changeUserRoles(Long userId, String newRole) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId", "User with id '" + userId + "' not found."));
+        User user = userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("userId", "User with id '" + userId + "' not found."));
         roleService.findByName(newRole);
         Role adminRole = roleService.findByName("ADMIN");
         switch (newRole) {
@@ -97,7 +94,7 @@ public class UserServiceImpl implements UserService {
                     user.getRoles().remove(1);
                 }
             }
-            default -> throw new RoleNotFoundException(newRole, "Role '" + newRole + "' not found.");
+            default -> throw new CustomNotFoundException(newRole, "Role '" + newRole + "' not found.");
         }
         userRepository.save(user);
     }
@@ -110,27 +107,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void editUser(UserDto userDto) {
-        Optional<User> userToEdit = userRepository.findById(userDto.getId());
-        if (userToEdit.isPresent()) {
-            User user = userToEdit.get();
-            restrictedUpdateOfUser(user, userDto);
-            user.setUpdatedOn(LocalDateTime.now());
-            userRepository.save(user);
-        }
-    }
-
-    @Override
-    public void update(User user) {
-        userRepository.save(user);
-    }
-
-    @Override
-    public User findById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("userId", "User with id " + userId + " not found."));
-    }
-
-    private void restrictedUpdateOfUser(User user, UserDto userDto) {
-        if (userDto.getFirstName() != null && !userDto.getFirstName().isBlank()) {
+        User user  = findById(userDto.getId());
+        if(userDto.getFirstName() != null && !userDto.getFirstName().isBlank()){
             user.setFirstName(userDto.getFirstName());
         }
         if (userDto.getLastName() != null && !userDto.getLastName().isBlank()) {
@@ -142,6 +120,18 @@ public class UserServiceImpl implements UserService {
         if (userDto.getEmail() != null && !userDto.getEmail().isBlank() && !userRepository.existsByEmail(userDto.getEmail())) {
             user.setEmail(userDto.getEmail());
         }
+        user.setUpdatedOn(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    @Override
+    public void update(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new CustomNotFoundException("userId", "User with id " + userId + " not found."));
     }
 
     @Override

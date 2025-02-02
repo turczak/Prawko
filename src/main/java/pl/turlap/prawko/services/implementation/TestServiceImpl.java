@@ -1,15 +1,20 @@
 package pl.turlap.prawko.services.implementation;
 
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.QuestionDto;
+import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.mappers.QuestionMapper;
-import pl.turlap.prawko.models.*;
+import pl.turlap.prawko.models.Answer;
+import pl.turlap.prawko.models.Category;
+import pl.turlap.prawko.models.Question;
+import pl.turlap.prawko.models.QuestionType;
+import pl.turlap.prawko.models.Test;
+import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.repositories.QuestionRepository;
 import pl.turlap.prawko.repositories.TestRepository;
-import pl.turlap.prawko.repositories.UserRepository;
 import pl.turlap.prawko.services.TestService;
+import pl.turlap.prawko.services.UserService;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -24,14 +29,19 @@ public class TestServiceImpl implements TestService {
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
-    public List<QuestionDto> generateTest(Long userId, Language language, Category category) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
-        List<Question> basicQuestions = generateBasicQuestions(category);
-        List<Question> specialQuestions = generateSpecialQuestions(category);
+    public List<QuestionDto> showQuestions(Long testId) {
+        Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
+        return test.getQuestions().stream().map(question -> questionMapper.mapToQuestionDto(question, test.getUser().getLanguage())).toList();
+    }
+
+    @Override
+    public Test generateTest(Long userId) {
+        User user = userService.findById(userId);
+        List<Question> basicQuestions = generateBasicQuestions(user.getCategory());
+        List<Question> specialQuestions = generateSpecialQuestions(user.getCategory());
 
         List<Question> allQuestions = Stream.of(basicQuestions,
                         specialQuestions
@@ -39,18 +49,14 @@ public class TestServiceImpl implements TestService {
                 .flatMap(Collection::stream)
                 .toList();
 
-        Test test = Test.builder()
-                .user(user)
-                .createdAt(LocalDateTime.now())
-                .questions(allQuestions)
-                .userAnswers(new ArrayList<>())
-                .isActive(true)
-                .build();
+        Test test = new Test()
+                .withUser(user)
+                .withQuestions(allQuestions)
+                .withCreatedAt(LocalDateTime.now())
+                .withIsActive(true);
         user.getTests().add(test);
-        userRepository.save(user);
-        return test.getQuestions().stream()
-                .map(question -> questionMapper.mapToQuestionDto(question, language))
-                .toList();
+        testRepository.save(test);
+        return test;
     }
 
     private List<Question> generateSpecialQuestions(Category category) {
@@ -88,7 +94,7 @@ public class TestServiceImpl implements TestService {
 
     @Override
     public void saveUserAnswer(Test test, Answer answer) {
-        if(!test.getUserAnswers().contains(answer)){
+        if (!test.getUserAnswers().contains(answer)) {
             test.getUserAnswers().add(answer);
             testRepository.save(test);
         }

@@ -19,6 +19,6 @@ public interface QuestionService {
 
     List<QuestionDto> findAllByTypeAndValue(QuestionType type, int value, Language language);
 
-    List<QuestionDto> findAllByType(QuestionType type, Language language);
+    List<QuestionDto> findAllByType(String type, String language);
 
 }

@@ -1,46 +1,42 @@
 package pl.turlap.prawko.services.implementation;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pl.turlap.prawko.dto.QuestionDto;
-import pl.turlap.prawko.mappers.CategoryMapper;
+import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.mappers.QuestionMapper;
-import pl.turlap.prawko.models.*;
-import pl.turlap.prawko.repositories.CategoryRepository;
-import pl.turlap.prawko.repositories.LanguageRepository;
+import pl.turlap.prawko.models.Language;
+import pl.turlap.prawko.models.Question;
+import pl.turlap.prawko.models.QuestionType;
 import pl.turlap.prawko.repositories.QuestionRepository;
+import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.QuestionService;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
     private final QuestionRepository questionRepository;
 
-    private final LanguageRepository languageRepository;
+    private final LanguageService languageService;
 
     private final QuestionMapper questionMapper;
 
-    @Autowired
-    public QuestionServiceImpl(QuestionRepository questionRepository, LanguageRepository languageRepository, CategoryRepository categoryRepository) {
-        this.questionRepository = questionRepository;
-        this.languageRepository = languageRepository;
-        this.questionMapper = new QuestionMapper(this.languageRepository, categoryRepository);
-    }
-
     @Override
     public List<QuestionDto> findAllQuestionsByLanguage(String language) {
-        Language byNameOrCode = languageRepository.findByNameOrCode(language);
+        Language byNameOrCode = languageService.findByNameOrCode(language);
         List<Question> questions = questionRepository.findAll();
         return questions.stream().map(question -> questionMapper.mapToQuestionDto(question, byNameOrCode)).collect(Collectors.toList());
     }
 
     @Override
     public Optional<QuestionDto> findById(Long id, String lang) {
-        Language byNameOrCode = languageRepository.findByNameOrCode(lang);
+        Language byNameOrCode = languageService.findByNameOrCode(lang);
         return questionRepository.findById(id).map(question -> questionMapper.mapToQuestionDto(question, byNameOrCode));
     }
 
@@ -57,9 +53,19 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> findAllByType(QuestionType type, Language language) {
-        List<Question> questions = questionRepository.findAllQuestionsByType(type);
-        return questions.stream()
+    public List<QuestionDto> findAllByType(String type, String languageNameOrCode) {
+        Language language = languageService.findByNameOrCode(languageNameOrCode);
+        QuestionType questionType;
+        switch (type.toUpperCase()){
+            case "BASIC" -> {
+                questionType = QuestionType.PODSTAWOWY;
+            }
+            case "SPECIAL" ->{
+                questionType = QuestionType.SPECJALISTYCZNY;
+            }
+            default -> throw new CustomNotFoundException("questionType", "Question type '" + type + "' not found.");
+        }
+        return questionRepository.findAllQuestionsByType(questionType).stream()
                 .map(question -> questionMapper.mapToQuestionDto(question, language))
                 .collect(Collectors.toList());
     }
