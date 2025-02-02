@@ -8,7 +8,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import pl.turlap.prawko.dto.AnswerDto;
 import pl.turlap.prawko.dto.QuestionDto;
-import pl.turlap.prawko.models.*;
+import pl.turlap.prawko.models.Answer;
+import pl.turlap.prawko.models.AnswerTranslation;
+import pl.turlap.prawko.models.Category;
+import pl.turlap.prawko.models.Language;
+import pl.turlap.prawko.models.Question;
+import pl.turlap.prawko.models.QuestionCSVRepresentation;
+import pl.turlap.prawko.models.QuestionTranslation;
+import pl.turlap.prawko.models.QuestionType;
 import pl.turlap.prawko.repositories.CategoryRepository;
 import pl.turlap.prawko.repositories.LanguageRepository;
 
@@ -18,7 +25,9 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,11 +35,8 @@ import java.util.stream.Collectors;
 public class QuestionMapper {
 
     private final LanguageRepository languageRepository;
-
     private final CategoryRepository categoryRepository;
-
     private final CategoryMapper categoryMapper = new CategoryMapper();
-
 
     public QuestionDto mapToQuestionDto(Question question, Language language) {
 
@@ -41,15 +47,14 @@ public class QuestionMapper {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No translation found for question."));
 
-        return QuestionDto.builder()
-                .name(question.getName())
-                .translation(translatedQuestionContent.getContent())
-                .answers(translatedAnswers)
-                .type(question.getType())
-                .value(question.getValue())
-                .media(question.getMedia())
-                .categories(categoryMapper.toCategoryDto(question.getCategories()))
-                .build();
+        return new QuestionDto()
+                .withName(question.getName())
+                .withTranslation(translatedQuestionContent.getContent())
+                .withAnswers(translatedAnswers)
+                .withType(question.getType())
+                .withValue(question.getValue())
+                .withMedia(question.getMedia())
+                .withCategories(categoryMapper.toCategoryDto(question.getCategories()));
     }
 
     private List<AnswerDto> getAnswerDtos(Question question, Language language) {
@@ -59,14 +64,14 @@ public class QuestionMapper {
                     .filter(translation -> translation.getLanguage().equals(language))
                     .findFirst()
                     .orElse(null);
-            AnswerDto answerDto = AnswerDto.builder()
-                    .label(answer.getLabel())
-                    .id(answer.getId())
-                    .build();
             if (answerTranslation != null) {
-                answerDto.setContent(answerTranslation.getContent());
+                translatedAnswers.add(new AnswerDto()
+                        .withId(answer.getId())
+                        .withLabel(answer.getLabel())
+                        .withContent(answerTranslation.getContent()));
+            } else {
+                translatedAnswers.add(new AnswerDto().withId(answer.getId()).withLabel(answer.getLabel()));
             }
-            translatedAnswers.add(answerDto);
         }
         return translatedAnswers;
     }
@@ -121,9 +126,8 @@ public class QuestionMapper {
         List<Category> categories = new ArrayList<>();
 
         for (String s : csvLine.getCategories().split(",")) {
-            if (categoryRepository.findByName(s) != null) {
-                categories.add(categoryRepository.findByName(s));
-            }
+            Optional<Category> category = categoryRepository.findByName(s);
+            category.ifPresent(categories::add);
         }
 
         return categories;
@@ -226,7 +230,7 @@ public class QuestionMapper {
             AnswerTranslation negativeTranslation = new AnswerTranslation(answerNo, language);
 
             positiveTranslation.setContent(
-                    switch (language.getCode().toUpperCase()){
+                    switch (language.getCode().toUpperCase()) {
                         case "PL" -> "Tak";
                         case "EN" -> "Yes";
                         case "DE" -> "Ja";
@@ -235,7 +239,7 @@ public class QuestionMapper {
                     }
             );
             negativeTranslation.setContent(
-                    switch (language.getCode().toUpperCase()){
+                    switch (language.getCode().toUpperCase()) {
                         case "PL" -> "Nie";
                         case "EN" -> "No";
                         case "DE" -> "Nein";

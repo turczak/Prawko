@@ -37,17 +37,13 @@ public class UserMapper {
     }
 
     public UserDto mapToUserDto(User user) {
-        return UserDto.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .userName(user.getUserName())
-                .createdOn(user.getCreatedOn())
-                .updatedOn(user.getUpdatedOn())
-                .enabled(user.getEnabled())
-                .roles(roleMapper.toRoleDtos(user.getRoles()))
-                .build();
+        return new UserDto(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getUserName(),
+                roleMapper.toRoleDtos(user.getRoles()));
     }
 
 }

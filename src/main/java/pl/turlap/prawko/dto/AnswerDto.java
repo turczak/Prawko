@@ -1,15 +1,16 @@
 package pl.turlap.prawko.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.With;
 
-//answer in selected language
-@Data
-@Builder
+@With
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AnswerDto {
-
     private Long id;
     private Character label;
     private String content;
-
 }

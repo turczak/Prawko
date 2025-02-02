@@ -1,21 +1,23 @@
 package pl.turlap.prawko.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import pl.turlap.prawko.models.QuestionType;
 
 import java.util.List;
 
-@Data
-@Builder
+@With
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
 public class QuestionDto {
-
     private String name;
     private String translation;
     private List<AnswerDto> answers;
     private String media;
     private QuestionType type;
     private Integer value;
-    private List<CategoryDto> categories;
-
+    private List<String> categories;
 }
