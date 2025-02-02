@@ -3,16 +3,20 @@ package pl.turlap.prawko.services.implementation;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.turlap.prawko.dto.QuestionDto;
+import pl.turlap.prawko.dto.TestDto;
 import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.mappers.QuestionMapper;
+import pl.turlap.prawko.mappers.TestMapper;
 import pl.turlap.prawko.models.Answer;
 import pl.turlap.prawko.models.Category;
+import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.Question;
 import pl.turlap.prawko.models.QuestionType;
 import pl.turlap.prawko.models.Test;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.repositories.QuestionRepository;
 import pl.turlap.prawko.repositories.TestRepository;
+import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.TestService;
 import pl.turlap.prawko.services.UserService;
 
@@ -30,11 +34,27 @@ public class TestServiceImpl implements TestService {
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
     private final UserService userService;
+    private final TestMapper testMapper;
+    private final LanguageService languageService;
 
     @Override
     public List<QuestionDto> showQuestions(Long testId) {
         Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
         return test.getQuestions().stream().map(question -> questionMapper.mapToQuestionDto(question, test.getUser().getLanguage())).toList();
+    }
+
+    @Override
+    public List<TestDto> findAllByUserId(Long userId) {
+        User user = userService.findById(userId);
+        List<Test> allTests = testRepository.findAllByUserId(userId);
+        return testMapper.toTestsDtos(allTests, user.getLanguage());
+    }
+
+    @Override
+    public TestDto findById(Long testId, String languageNameOrCode) {
+        Language language = languageService.findByNameOrCode(languageNameOrCode);
+        Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
+        return testMapper.toTestDto(test, language);
     }
 
     @Override

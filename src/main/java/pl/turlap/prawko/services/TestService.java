@@ -1,6 +1,7 @@
 package pl.turlap.prawko.services;
 
 import pl.turlap.prawko.dto.QuestionDto;
+import pl.turlap.prawko.dto.TestDto;
 import pl.turlap.prawko.models.Answer;
 import pl.turlap.prawko.models.Test;
 
@@ -17,5 +18,9 @@ public interface TestService {
     void saveTest(Test test);
 
     List<QuestionDto> showQuestions(Long testId);
+
+    TestDto findById(Long testId, String language);
+
+    List<TestDto> findAllByUserId(Long userId);
 
 }

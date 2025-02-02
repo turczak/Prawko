@@ -19,4 +19,7 @@ public interface TestRepository extends JpaRepository<Test, Long> {
     @Query("SELECT q FROM question q WHERE q.type = :type AND q.value = :value")
     List<Question> findQuestionsByTypeAndValue(@Param("type") QuestionType type, @Param("value") int value);
 
+    @Query("SELECT t FROM test t WHERE t.user.id = :userId")
+    List<Test> findAllByUserId(@Param("userId") Long userId);
+
 }

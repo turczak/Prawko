@@ -76,6 +76,10 @@ public class QuestionMapper {
         return translatedAnswers;
     }
 
+    public List<QuestionDto> mapToQuestionsDtos(List<Question> questions, Language language) {
+        return questions.stream().map(question -> mapToQuestionDto(question, language)).toList();
+    }
+
     public List<Question> mapCSVtoQuestions(MultipartFile file) {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             HeaderColumnNameMappingStrategy<QuestionCSVRepresentation> strategy =
