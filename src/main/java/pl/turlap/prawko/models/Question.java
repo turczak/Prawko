@@ -47,7 +47,7 @@ public class Question {
     )
     private List<Category> categories;
 
-    @ManyToMany(mappedBy = "questions")
+    @ManyToMany(mappedBy = "questions", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Test> tests;
 

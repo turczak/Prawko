@@ -41,8 +41,8 @@ public class UserMapper {
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getEmail(),
                 user.getUserName(),
+                user.getEmail(),
                 roleMapper.toRoleDtos(user.getRoles()));
     }
 

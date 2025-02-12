@@ -53,7 +53,7 @@ public class User {
     )
     private List<Role> roles;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Test> tests;
 
     @ManyToOne

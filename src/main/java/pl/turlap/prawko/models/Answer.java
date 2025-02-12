@@ -35,7 +35,7 @@ public class Answer {
     @OneToMany(mappedBy = "answer", cascade = CascadeType.ALL)
     private List<AnswerTranslation> translations;
 
-    @ManyToMany(mappedBy = "userAnswers")
+    @ManyToMany(mappedBy = "userAnswers", cascade = CascadeType.ALL)
     @JsonBackReference
     private List<Test> tests;
 
