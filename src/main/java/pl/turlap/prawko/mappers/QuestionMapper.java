@@ -54,7 +54,7 @@ public class QuestionMapper {
                 .withType(question.getType())
                 .withValue(question.getValue())
                 .withMedia(question.getMedia())
-                .withCategories(categoryMapper.toCategoryDto(question.getCategories()));
+                .withCategories(question.getCategories().stream().map(categoryMapper::toCategoryDto).toList());
     }
 
     private List<AnswerDto> getAnswerDtos(Question question, Language language) {

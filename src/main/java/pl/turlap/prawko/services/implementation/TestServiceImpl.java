@@ -47,7 +47,7 @@ public class TestServiceImpl implements TestService {
     public List<TestDto> findAllByUserId(Long userId) {
         User user = userService.findById(userId);
         List<Test> allTests = testRepository.findAllByUserId(userId);
-        return testMapper.toTestsDtos(allTests, user.getLanguage());
+        return allTests.stream().map(test -> testMapper.toTestDto(test, user.getLanguage())).toList();
     }
 
     @Override

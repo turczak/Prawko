@@ -41,9 +41,9 @@ public class UserMapper {
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getUserName(),
                 user.getEmail(),
-                roleMapper.toRoleDtos(user.getRoles()));
+                user.getUserName(),
+                user.getRoles().stream().map(roleMapper::toRoleDto).toList());
     }
 
 }
