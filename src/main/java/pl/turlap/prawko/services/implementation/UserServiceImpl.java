@@ -41,14 +41,14 @@ public class UserServiceImpl implements UserService {
         } else if (checkIfExist(registerDto.getEmail())) {
             throw new CustomAlreadyExistsException("email", "User with email '" + registerDto.getEmail() + "' already exists.");
         }
-        User user = userMapper.fromRegisterToUser(registerDto);
+        User user = userMapper.fromDto(registerDto);
         userRepository.save(user);
     }
 
     @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
-        return users.stream().map(userMapper::mapToUserDto).collect(Collectors.toList());
+        return users.stream().map(userMapper::toDto).collect(Collectors.toList());
     }
 
     @Override

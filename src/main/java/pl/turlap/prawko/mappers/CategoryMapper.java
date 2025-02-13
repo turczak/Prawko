@@ -6,7 +6,7 @@ import pl.turlap.prawko.models.Category;
 @Component
 public class CategoryMapper {
 
-    public String toCategoryDto(Category category){
+    public String toDto(Category category){
         return category.getName();
     }
 

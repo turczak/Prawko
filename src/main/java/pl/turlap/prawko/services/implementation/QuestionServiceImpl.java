@@ -34,19 +34,19 @@ public class QuestionServiceImpl implements QuestionService {
     public List<QuestionDto> findAllQuestionsByLanguage(String language) {
         Language byNameOrCode = languageService.findByNameOrCode(language);
         List<Question> questions = questionRepository.findAll();
-        return questions.stream().map(question -> questionMapper.mapToQuestionDto(question, byNameOrCode)).collect(Collectors.toList());
+        return questions.stream().map(question -> questionMapper.toDto(question, byNameOrCode)).collect(Collectors.toList());
     }
 
     @Override
     public Optional<QuestionDto> findById(Long id, String lang) {
         Language byNameOrCode = languageService.findByNameOrCode(lang);
-        return questionRepository.findById(id).map(question -> questionMapper.mapToQuestionDto(question, byNameOrCode));
+        return questionRepository.findById(id).map(question -> questionMapper.toDto(question, byNameOrCode));
     }
 
     @Override
     public List<QuestionDto> findAllByTypeAndValue(QuestionType type, int value, Language language) {
         List<Question> questions = questionRepository.findQuestionsByTypeAndValue(type, value);
-        return questions.stream().map(question -> questionMapper.mapToQuestionDto(question, language)).collect(Collectors.toList());
+        return questions.stream().map(question -> questionMapper.toDto(question, language)).collect(Collectors.toList());
     }
 
     @Override
@@ -69,7 +69,7 @@ public class QuestionServiceImpl implements QuestionService {
             default -> throw new CustomNotFoundException("questionType", "Question type '" + type + "' not found.");
         }
         return questionRepository.findAllQuestionsByType(questionType).stream()
-                .map(question -> questionMapper.mapToQuestionDto(question, language))
+                .map(question -> questionMapper.toDto(question, language))
                 .collect(Collectors.toList());
     }
 

@@ -40,21 +40,21 @@ public class TestServiceImpl implements TestService {
     @Override
     public List<QuestionDto> showQuestions(Long testId) {
         Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
-        return test.getQuestions().stream().map(question -> questionMapper.mapToQuestionDto(question, test.getUser().getLanguage())).toList();
+        return test.getQuestions().stream().map(question -> questionMapper.toDto(question, test.getUser().getLanguage())).toList();
     }
 
     @Override
     public List<TestDto> findAllByUserId(Long userId) {
         User user = userService.findById(userId);
         List<Test> allTests = testRepository.findAllByUserId(userId);
-        return allTests.stream().map(test -> testMapper.toTestDto(test, user.getLanguage())).toList();
+        return allTests.stream().map(test -> testMapper.toDto(test, user.getLanguage())).toList();
     }
 
     @Override
     public TestDto findById(Long testId, String languageNameOrCode) {
         Language language = languageService.findByNameOrCode(languageNameOrCode);
         Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
-        return testMapper.toTestDto(test, language);
+        return testMapper.toDto(test, language);
     }
 
     @Override

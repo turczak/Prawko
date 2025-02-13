@@ -19,7 +19,7 @@ public class QuestionMapper {
 
     private final CategoryMapper categoryMapper = new CategoryMapper();
 
-    public QuestionDto mapToQuestionDto(Question question, Language language) {
+    public QuestionDto toDto(Question question, Language language) {
 
         List<AnswerDto> translatedAnswers = getAnswerDtos(question, language);
 
@@ -35,7 +35,7 @@ public class QuestionMapper {
                 .withType(question.getType())
                 .withValue(question.getValue())
                 .withMedia(question.getMedia())
-                .withCategories(question.getCategories().stream().map(categoryMapper::toCategoryDto).toList());
+                .withCategories(question.getCategories().stream().map(categoryMapper::toDto).toList());
     }
 
     private List<AnswerDto> getAnswerDtos(Question question, Language language) {

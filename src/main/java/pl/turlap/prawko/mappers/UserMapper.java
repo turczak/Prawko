@@ -22,7 +22,7 @@ public class UserMapper {
     private final RoleService roleService;
     private final RoleMapper roleMapper;
 
-    public User fromRegisterToUser(RegisterDto registerDto) {
+    public User fromDto(RegisterDto registerDto) {
         User user = new User();
         user.setFirstName(registerDto.getFirstName());
         user.setLastName(registerDto.getLastName());
@@ -36,14 +36,14 @@ public class UserMapper {
         return user;
     }
 
-    public UserDto mapToUserDto(User user) {
+    public UserDto toDto(User user) {
         return new UserDto(
                 user.getId(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
                 user.getUserName(),
-                user.getRoles().stream().map(roleMapper::toRoleDto).toList());
+                user.getRoles().stream().map(roleMapper::toDto).toList());
     }
 
 }

@@ -34,7 +34,7 @@ public class RoleServiceImpl implements RoleService {
         if (roleRepository.findByName(roleName).isPresent()) {
             throw new CustomAlreadyExistsException("roleName", "Role '" + roleName + "' already exists.");
         }
-        roleRepository.save(roleMapper.fromDtoToRole(roleName));
+        roleRepository.save(roleMapper.fromDto(roleName));
     }
 
     @Override

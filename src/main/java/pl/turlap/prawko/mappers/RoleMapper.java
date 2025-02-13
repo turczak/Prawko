@@ -6,11 +6,11 @@ import pl.turlap.prawko.models.Role;
 @Component
 public class RoleMapper {
 
-    public Role fromDtoToRole(String roleName) {
+    public Role fromDto(String roleName) {
         return new Role().withName(roleName);
     }
 
-    public String toRoleDto(Role role){
+    public String toDto(Role role){
         return role.getName();
     }
 
