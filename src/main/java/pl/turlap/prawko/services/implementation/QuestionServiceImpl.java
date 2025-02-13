@@ -10,6 +10,7 @@ import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.Question;
 import pl.turlap.prawko.models.QuestionType;
 import pl.turlap.prawko.repositories.QuestionRepository;
+import pl.turlap.prawko.services.CSVService;
 import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.QuestionService;
 
@@ -26,6 +27,8 @@ public class QuestionServiceImpl implements QuestionService {
     private final LanguageService languageService;
 
     private final QuestionMapper questionMapper;
+
+    private final CSVService csvService;
 
     @Override
     public List<QuestionDto> findAllQuestionsByLanguage(String language) {
@@ -48,7 +51,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void saveAll(MultipartFile file) {
-        List<Question> questions = questionMapper.mapCSVtoQuestions(file);
+        List<Question> questions = csvService.mapCSVtoQuestions(file);
         questionRepository.saveAll(questions);
     }
 

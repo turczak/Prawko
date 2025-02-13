@@ -16,8 +16,9 @@ public class TestMapper {
         return new TestDto()
                 .withUserId(test.getUser().getId())
                 .withIsActive(test.getIsActive())
-                .withQuestions(questionMapper.mapToQuestionsDtos(test.getQuestions(), language))
+                .withQuestions(test.getQuestions().stream().map(question -> questionMapper.mapToQuestionDto(question,language)).toList())
                 .withUserAnswers(test.getUserAnswers().stream().map(answerMapper::toAnswerDto).toList())
                 .withCreatedAt(test.getCreatedAt());
     }
+
 }
