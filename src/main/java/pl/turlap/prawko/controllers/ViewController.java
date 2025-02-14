@@ -28,6 +28,7 @@ import pl.turlap.prawko.services.TestService;
 import pl.turlap.prawko.services.UserService;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -107,15 +108,21 @@ public class ViewController {
                                Principal principal) {
         User user = userService.findByUserName(principal.getName());
         Test test = testService.generateTest(user.getId());
+        LocalDateTime startTime = test.getCreatedAt();
         session.setAttribute("userId", user.getId());
         session.setAttribute("testId", test.getId());
         session.setAttribute("currentPage", 0);
+        session.setAttribute("startTime", startTime);
         return "redirect:exam";
     }
 
     @GetMapping(path = "/exam")
     public String displayCurrentExam(Model model,
                                      HttpSession session) {
+        if(model.getAttribute("startTime") == null){
+            LocalDateTime startTime = (LocalDateTime) session.getAttribute("startTime");
+            model.addAttribute("startTime", startTime);
+        }
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         List<QuestionDto> questions = testService.showQuestions((Long) session.getAttribute("testId"));
         model.addAttribute("question", questions.get(currentPage));
