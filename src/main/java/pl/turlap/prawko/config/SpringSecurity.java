@@ -26,7 +26,7 @@ public class SpringSecurity {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
                 .authorizeHttpRequests((authorize) ->
                         authorize
                                 .requestMatchers("/css/**", "/js/**", "/media/**", "/scss/**").permitAll()
@@ -56,7 +56,12 @@ public class SpringSecurity {
                                 .requestMatchers("/tests/**").permitAll()
                                 .requestMatchers("/tests/new").permitAll()
                                 .requestMatchers("/tests/all").permitAll()
-                ).formLogin(
+                )
+                .sessionManagement((sessions) -> sessions
+                        .sessionConcurrency((concurency) -> concurency
+                                .maximumSessions(1)
+                                .expiredUrl("/login?expired")))
+                .formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
