@@ -61,4 +61,7 @@ public class Test {
     @Column(name = "is_active", columnDefinition = "BOOLEAN")
     private Boolean isActive;
 
+    @Column(name = "score", columnDefinition = "INTEGER")
+    private Integer score;
+
 }

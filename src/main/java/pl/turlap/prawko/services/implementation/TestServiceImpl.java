@@ -17,7 +17,6 @@ import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.repositories.QuestionRepository;
 import pl.turlap.prawko.repositories.TestRepository;
 import pl.turlap.prawko.services.AnswerService;
-import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.TestService;
 import pl.turlap.prawko.services.UserService;
 
@@ -30,14 +29,12 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public class TestServiceImpl implements TestService {
 
-
     private final TestRepository testRepository;
     private final QuestionRepository questionRepository;
     private final QuestionMapper questionMapper;
     private final UserService userService;
     private final TestMapper testMapper;
     private final AnswerService answerService;
-    private final LanguageService languageService;
 
     @Override
     public List<TestDto> findAllByUserId(Long userId) {
@@ -52,9 +49,9 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public TestDto findById(Long testId, String languageNameOrCode) {
+    public TestDto showResult(Long testId) {
         Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found"));
-        Language language = languageService.findByNameOrCode(languageNameOrCode);
+        Language language = test.getUser().getLanguage();
         return testMapper.toDto(test, language);
     }
 
@@ -155,6 +152,7 @@ public class TestServiceImpl implements TestService {
         }
         test.setScore(score);
         test.setIsActive(false);
+        testRepository.save(test);
     }
 
     @Override

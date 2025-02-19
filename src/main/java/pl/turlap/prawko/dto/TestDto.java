@@ -18,4 +18,5 @@ public class TestDto {
     private Long userId;
     private List<QuestionDto> questions;
     private List<AnswerDto> userAnswers;
+    private Integer score;
 }

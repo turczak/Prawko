@@ -14,7 +14,7 @@ public interface TestService {
 
     Test findById(Long testId);
 
-    TestDto findById(Long testId, String language);
+    TestDto showResult(Long testId);
 
     List<TestDto> findAllByUserId(Long userId);
 

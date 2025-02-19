@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import pl.turlap.prawko.dto.AnswerDto;
 import pl.turlap.prawko.dto.RegisterDto;
+import pl.turlap.prawko.dto.TestDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
 import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
 import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.models.Test;
 import pl.turlap.prawko.models.User;
-import pl.turlap.prawko.services.AnswerService;
 import pl.turlap.prawko.services.CategoryService;
 import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.QuestionService;
@@ -37,7 +38,6 @@ public class ViewController {
     private final UserService userService;
     private final QuestionService questionService;
     private final TestService testService;
-    private final AnswerService answerService;
 
     @GetMapping("/index")
     public String showHomePage(Principal principal,
@@ -116,7 +116,7 @@ public class ViewController {
     @GetMapping(path = "/exam")
     public String displayCurrentExam(Model model,
                                      HttpSession session) {
-        if(model.getAttribute("startTime") == null){
+        if (model.getAttribute("startTime") == null) {
             LocalDateTime startTime = (LocalDateTime) session.getAttribute("startTime");
             model.addAttribute("startTime", startTime);
         }
@@ -138,6 +138,19 @@ public class ViewController {
         }
         session.setAttribute("currentPage", currentPage + 1);
         return "redirect:/exam";
+    }
+
+    @GetMapping(path = "/result")
+    public String showResultOfExam(HttpSession session,
+                                   Model model) {
+        TestDto test = testService.showResult((Long) session.getAttribute("testId"));
+        model.addAttribute("questions", test.getQuestions());
+        model.addAttribute("userAnswers", test.getUserAnswers());
+        for (AnswerDto answerDto : test.getUserAnswers()) {
+            System.out.println(answerDto.getContent());
+        }
+        model.addAttribute("score", test.getScore());
+        return "result";
     }
 
 }

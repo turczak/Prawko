@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import pl.turlap.prawko.dto.TestDto;
 import pl.turlap.prawko.services.TestService;
@@ -30,15 +29,12 @@ public class TestController {
     }
 
     @GetMapping(path = "/{testId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public TestDto findTest(@PathVariable(name = "testId") Long testId,
-                            @RequestParam(name = "language", required = false, defaultValue = "PL") String language){
-        return testService.findById(testId, language);
+    public TestDto findTest(@PathVariable(name = "testId") Long testId) {
+        return testService.showResult(testId);
     }
 
     @GetMapping(path = "/all/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
-    public List<TestDto> findAllTestsOfUser(@PathVariable (name = "userId") Long userId){
+    public List<TestDto> findAllTestsOfUser(@PathVariable(name = "userId") Long userId) {
         return testService.findAllByUserId(userId);
     }
 
