@@ -16,6 +16,7 @@ import pl.turlap.prawko.models.Test;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.repositories.QuestionRepository;
 import pl.turlap.prawko.repositories.TestRepository;
+import pl.turlap.prawko.services.AnswerService;
 import pl.turlap.prawko.services.LanguageService;
 import pl.turlap.prawko.services.TestService;
 import pl.turlap.prawko.services.UserService;
@@ -35,13 +36,8 @@ public class TestServiceImpl implements TestService {
     private final QuestionMapper questionMapper;
     private final UserService userService;
     private final TestMapper testMapper;
+    private final AnswerService answerService;
     private final LanguageService languageService;
-
-    @Override
-    public List<QuestionDto> showQuestions(Long testId) {
-        Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
-        return test.getQuestions().stream().map(question -> questionMapper.toDto(question, test.getUser().getLanguage())).toList();
-    }
 
     @Override
     public List<TestDto> findAllByUserId(Long userId) {
@@ -51,9 +47,14 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
+    public Test findById(Long testId) {
+        return testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
+    }
+
+    @Override
     public TestDto findById(Long testId, String languageNameOrCode) {
+        Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found"));
         Language language = languageService.findByNameOrCode(languageNameOrCode);
-        Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found."));
         return testMapper.toDto(test, language);
     }
 
@@ -103,17 +104,9 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public Test findActiveUserTest(Long userId) {
-        return testRepository.findActiveUserTest(userId);
-    }
-
-    @Override
-    public void saveTest(Test test) {
-        testRepository.save(test);
-    }
-
-    @Override
-    public void saveUserAnswer(Test test, Answer answer) {
+    public void saveUserAnswer(Long testId, Long answerId) {
+        Test test = findById(testId);
+        Answer answer = answerService.findAnswerById(answerId);
         if (!test.getUserAnswers().contains(answer)) {
             test.getUserAnswers().add(answer);
             testRepository.save(test);
@@ -149,4 +142,26 @@ public class TestServiceImpl implements TestService {
         return modifableList.subList(0, Math.min(count, modifableList.size()));
     }
 
+    @Override
+    public void calculateResult(Long testId) {
+        Test test = findById(testId);
+        Integer score = 0;
+        List<Question> questions = test.getQuestions();
+        List<Answer> userAnswers = test.getUserAnswers();
+        for (int i = 0; i < questions.size(); i++) {
+            if (userAnswers.get(i).getIsCorrect()) {
+                score += questions.get(i).getValue();
+            }
+        }
+        test.setScore(score);
+        test.setIsActive(false);
+    }
+
+    @Override
+    public QuestionDto selectQuestion(Long testId, Integer currentPage) {
+        Test test = findById(testId);
+        Language language = test.getUser().getLanguage();
+        Question question = test.getQuestions().get(currentPage);
+        return questionMapper.toDto(question, language);
+    }
 }

@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-import pl.turlap.prawko.dto.QuestionDto;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
 import pl.turlap.prawko.exceptions.CustomAlreadyExistsException;
 import pl.turlap.prawko.exceptions.CustomNotFoundException;
-import pl.turlap.prawko.models.Answer;
 import pl.turlap.prawko.models.Test;
 import pl.turlap.prawko.models.User;
 import pl.turlap.prawko.services.AnswerService;
@@ -29,7 +27,6 @@ import pl.turlap.prawko.services.UserService;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Controller
 @AllArgsConstructor
@@ -124,8 +121,8 @@ public class ViewController {
             model.addAttribute("startTime", startTime);
         }
         Integer currentPage = (Integer) session.getAttribute("currentPage");
-        List<QuestionDto> questions = testService.showQuestions((Long) session.getAttribute("testId"));
-        model.addAttribute("question", questions.get(currentPage));
+        Long testId = (Long) session.getAttribute("testId");
+        model.addAttribute("question", testService.selectQuestion(testId, currentPage));
         return "exam";
     }
 
@@ -133,13 +130,11 @@ public class ViewController {
     public String submitUserAnswer(@RequestParam(name = "answer") Long answerId,
                                    HttpSession session) {
         Integer currentPage = (Integer) session.getAttribute("currentPage");
-        Test activeTest = testService.findActiveUserTest((Long) session.getAttribute("userId"));
-        Answer userAnswer = answerService.findAnswerById(answerId);
-        testService.saveUserAnswer(activeTest, userAnswer);
-        if (currentPage + 1 >= activeTest.getQuestions().size()) {
-            activeTest.setIsActive(false);
-            testService.saveTest(activeTest);
-            return "redirect:/tests/results";
+        Long testId = (Long) session.getAttribute("testId");
+        testService.saveUserAnswer(testId, answerId);
+        if (currentPage + 1 >= 32) {
+            testService.calculateResult(testId);
+            return "redirect:/result";
         }
         session.setAttribute("currentPage", currentPage + 1);
         return "redirect:/exam";
