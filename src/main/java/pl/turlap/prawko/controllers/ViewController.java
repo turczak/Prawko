@@ -122,6 +122,7 @@ public class ViewController {
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         Long testId = (Long) session.getAttribute("testId");
         model.addAttribute("question", testService.selectQuestion(testId, currentPage));
+        model.addAttribute("currentPage", currentPage);
         return "exam";
     }
 
