@@ -30,12 +30,11 @@ public class TestController {
 
     @GetMapping(path = "/{testId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public TestDto findTest(@PathVariable(name = "testId") Long testId) {
-        return testService.showResult(testId);
+        return testService.getTestDto(testId);
     }
 
     @GetMapping(path = "/all/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TestDto> findAllTestsOfUser(@PathVariable(name = "userId") Long userId) {
         return testService.findAllByUserId(userId);
     }
-
 }

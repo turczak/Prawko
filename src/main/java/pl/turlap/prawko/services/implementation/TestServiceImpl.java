@@ -49,7 +49,7 @@ public class TestServiceImpl implements TestService {
     }
 
     @Override
-    public TestDto showResult(Long testId) {
+    public TestDto getTestDto(Long testId) {
         Test test = testRepository.findById(testId).orElseThrow(() -> new CustomNotFoundException("testId", "Test with id '" + testId + "' not found"));
         Language language = test.getUser().getLanguage();
         return testMapper.toDto(test, language);

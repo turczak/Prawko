@@ -12,16 +12,15 @@ import pl.turlap.prawko.models.Language;
 public class AnswerMapper {
 
     public AnswerDto toDto(Answer answer, Language language) {
-        String translatedContent = "";
-        for (AnswerTranslation translation : answer.getTranslations()) {
-            if (translation.getLanguage() == language) {
-                translatedContent = translation.getContent();
-            }
-        }
+        String translatedContent = answer.getTranslations()
+                .stream()
+                .filter(translation -> translation.getLanguage() == language)
+                .map(AnswerTranslation::getContent)
+                .findFirst()
+                .orElse(null);
         return new AnswerDto()
                 .withId(answer.getId())
                 .withContent(translatedContent)
                 .withLabel(answer.getLabel());
     }
-
 }

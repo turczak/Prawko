@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
-import pl.turlap.prawko.dto.AnswerDto;
 import pl.turlap.prawko.dto.RegisterDto;
 import pl.turlap.prawko.dto.TestDto;
 import pl.turlap.prawko.dto.UserPreferencesDto;
@@ -132,7 +131,7 @@ public class ViewController {
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         Long testId = (Long) session.getAttribute("testId");
         testService.saveUserAnswer(testId, answerId);
-        if (currentPage + 1 >= 32) {
+        if (currentPage > 30) {
             testService.calculateResult(testId);
             return "redirect:/result";
         }
@@ -143,14 +142,10 @@ public class ViewController {
     @GetMapping(path = "/result")
     public String showResultOfExam(HttpSession session,
                                    Model model) {
-        TestDto test = testService.showResult((Long) session.getAttribute("testId"));
+        TestDto test = testService.getTestDto((Long) session.getAttribute("testId"));
         model.addAttribute("questions", test.getQuestions());
         model.addAttribute("userAnswers", test.getUserAnswers());
-        for (AnswerDto answerDto : test.getUserAnswers()) {
-            System.out.println(answerDto.getContent());
-        }
         model.addAttribute("score", test.getScore());
         return "result";
     }
-
 }
