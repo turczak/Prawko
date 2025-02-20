@@ -22,6 +22,6 @@ public class AnswerMapper {
                 .withId(answer.getId())
                 .withContent(translatedContent)
                 .withLabel(answer.getLabel())
-                .withIsCorrect(answer.getIsCorrect());
+                .withCorrect(answer.getIsCorrect());
     }
 }

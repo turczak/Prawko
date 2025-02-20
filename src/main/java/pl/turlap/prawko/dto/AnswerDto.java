@@ -13,5 +13,5 @@ public class AnswerDto {
     private Long id;
     private Character label;
     private String content;
-    private Boolean isCorrect;
+    private Boolean correct;
 }
