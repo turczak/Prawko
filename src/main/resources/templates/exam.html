@@ -46,7 +46,7 @@
                     <i class="fas fa-image fa-5x"></i>
                 </div>
             </div>
-            <p>Pozostały czas: <span id="timer"></span></p>
+            <p>Pozostały czas: <span id="timer" th:data-start-time="${startTime}"></span></p>
             <p>Pytanie <span th:text="${currentPage + 1}"></span>/32</p>
             <div th:unless="${#strings.isEmpty(question.media)}">
                 <!-- check if media is image -->
@@ -92,30 +92,8 @@
 
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script>
-    function toggleButton() {
-        const nextQuestionButton = document.getElementById('nextQuestionButton');
-        nextQuestionButton.disabled = !document.querySelector('input[name="answer"]:checked')
-    }
-</script>
-<script>
-    const startTime = new Date('[[${startTime}]]');
-    const duration = 25 * 60 * 1000;
-    function updateTimer(){
-        const now = new Date();
-        const endTime = new Date(startTime.getTime() + duration);
-        const timeRemaining = endTime - now;
-        if(timeRemaining > 0){
-            const minutes = Math.floor((timeRemaining / (1000 * 60)) % 60);
-            const seconds = Math.floor((timeRemaining / 1000) % 60);
-            document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        }else{
-            document.getElementById('timer').textContent = "Czas minął.";
-            window.location.href = '/exam/result';
-        }
-    }
-    setInterval(updateTimer, 1000);
-    updateTimer();
+<script th:src="@{/js/nextQuestion.js}"></script>
+<script th:src="@{/js/timer.js}">
 </script>
 </body>
 
