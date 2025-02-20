@@ -47,6 +47,7 @@
                 </div>
             </div>
             <p>Pozostały czas: <span id="timer"></span></p>
+            <p>Pytanie <span th:text="${currentPage + 1}"></span>/32</p>
             <div th:unless="${#strings.isEmpty(question.media)}">
                 <!-- check if media is image -->
                 <div
@@ -63,6 +64,9 @@
                         </video>
                     </div>
                 </div>
+            </div>
+            <!-- show black box when there is no media present -->
+            <div th:if="${#strings.isEmpty(question.media)}" class="ratio ratio-16x9 w-100 h-100 bg-black">
             </div>
             <h3 class="card-text" th:text="${question.translation}"></h3>
             <form id="answerForm" method="POST" th:action="@{/submitAnswer}">
