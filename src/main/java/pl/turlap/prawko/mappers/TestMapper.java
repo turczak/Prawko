@@ -16,9 +16,10 @@ public class TestMapper {
         return new TestDto()
                 .withUserId(test.getUser().getId())
                 .withIsActive(test.getIsActive())
-                .withQuestions(test.getQuestions().stream().map(question -> questionMapper.toDto(question,language)).toList())
-                .withUserAnswers(test.getUserAnswers().stream().map(answerMapper::toDto).toList())
-                .withCreatedAt(test.getCreatedAt());
+                .withQuestions(test.getQuestions().stream().map(question -> questionMapper.toDto(question, language)).toList())
+                .withUserAnswers(test.getUserAnswers().stream().map(answer -> answerMapper.toDto(answer, language)).toList())
+                .withCreatedAt(test.getCreatedAt())
+                .withScore(test.getScore());
     }
 
 }

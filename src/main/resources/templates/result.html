@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security6">
+
+<head>
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Aplikacja do wykonywania testów egzaminacyjnych na prawo jazdy</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+</head>
+
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/index}">Prawko</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Nowy egzamin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
+                </li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')">
+                    <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
+                        administracyjny</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <!-- Logout Button -->
+                <a th:href="@{/logout}" class="btn btn-danger" role="button">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <h1>Wynik egzaminu</h1>
+            <p>Twój wynik: <span th:text="${score}"></span></p>
+            <table>
+                <thead>
+                <tr>
+                    <th>Pytanie</th>
+                    <th>Udzielona odpowiedź</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="question, stat : ${questions}">
+                    <td th:text="${question.translation}"></td>
+                    <td th:text="${userAnswers[stat.index].content}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script th:src="@{/js/bootstrap.bundle.js}"></script>
+<script>
+
+</script>
+<script>
+
+</script>
+</body>
+
+</html>

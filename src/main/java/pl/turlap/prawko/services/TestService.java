@@ -2,7 +2,6 @@ package pl.turlap.prawko.services;
 
 import pl.turlap.prawko.dto.QuestionDto;
 import pl.turlap.prawko.dto.TestDto;
-import pl.turlap.prawko.models.Answer;
 import pl.turlap.prawko.models.Test;
 
 import java.util.List;
@@ -11,16 +10,16 @@ public interface TestService {
 
     Test generateTest(Long userId);
 
-    void saveUserAnswer(Test test, Answer answer);
+    void saveUserAnswer(Long testId, Long answerId);
 
-    Test findActiveUserTest(Long userId);
+    Test findById(Long testId);
 
-    void saveTest(Test test);
-
-    List<QuestionDto> showQuestions(Long testId);
-
-    TestDto findById(Long testId, String language);
+    TestDto getTestDto(Long testId);
 
     List<TestDto> findAllByUserId(Long userId);
+
+    void calculateResult(Long testId);
+
+    QuestionDto selectQuestion(Long testId, Integer currentPage);
 
 }

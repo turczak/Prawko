@@ -37,6 +37,7 @@ public class SpringSecurity {
                                 .requestMatchers("/newExam").hasAuthority("ROLE_USER")
                                 .requestMatchers("/exam").hasAuthority("ROLE_USER")
                                 .requestMatchers("/submitAnswer").hasAuthority("ROLE_USER")
+                                .requestMatchers("/result").hasAuthority("ROLE_USER")
                                 .requestMatchers("/upload").permitAll()
                                 .requestMatchers("/users/*/roles").permitAll()
                                 .requestMatchers("/questions/**").permitAll()
