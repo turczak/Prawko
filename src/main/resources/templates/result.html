@@ -52,7 +52,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="question, stat : ${questions}"
-                    th:classappend="${userAnswers[stat.index].isCorrect} ? 'table-success' : 'table-danger'">
+                    th:classappend="${userAnswers[stat.index].correct} ? 'table-success' : 'table-danger'">
                     <td th:text="${stat.count}"></td>
                     <td th:text="${question.translation}"></td>
                     <td th:text="${userAnswers[stat.index].content}"></td>
