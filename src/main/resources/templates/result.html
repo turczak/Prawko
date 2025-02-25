@@ -39,9 +39,9 @@
 
 <div class="container mt-5">
     <div class="card">
-        <div class="card-body">
-            <h1 th:if="${testType == 'trueOne'}">Wynik egzaminu: <span th:text="${score}"></span>/74 punkty.</h1>
-            <p><span th:if="${testType == 'trueOne'}" th:text="${score > 67 ? 'Gratulację, zdałeś!' : 'Niestety, nie udało się uzyskać wystarczającej ilości punktów.'}"></span></p>
+        <div class="card-body" th:if="${testType == 'trueOne'}">
+            <h1>Wynik egzaminu: <span th:text="${score}"></span>/74 punkty.</h1>
+            <p><span th:text="${score > 67 ? 'Gratulację, zdałeś!' : 'Niestety, nie udało się uzyskać wystarczającej ilości punktów.'}"></span></p>
             <table class="table">
                 <thead>
                 <tr>
