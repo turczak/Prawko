@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import pl.turlap.prawko.dto.QuestionDto;
 import pl.turlap.prawko.exceptions.CustomNotFoundException;
 import pl.turlap.prawko.mappers.QuestionMapper;
+import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Language;
 import pl.turlap.prawko.models.Question;
 import pl.turlap.prawko.models.QuestionType;
@@ -16,6 +17,7 @@ import pl.turlap.prawko.services.QuestionService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -73,4 +75,15 @@ public class QuestionServiceImpl implements QuestionService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<Question> findAllByCategoryAndType(Category category, QuestionType type) {
+        return questionRepository.findAllByCategoryAndType(category, type);
+    }
+
+    @Override
+    public Question randomQuestion(Category category) {
+        List<Question> byCategory = questionRepository.findAllByCategory(category);
+        Random random = new Random();
+        return byCategory.get(random.nextInt(byCategory.size()));
+    }
 }

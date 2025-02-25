@@ -2,7 +2,9 @@ package pl.turlap.prawko.services;
 
 import org.springframework.web.multipart.MultipartFile;
 import pl.turlap.prawko.dto.QuestionDto;
+import pl.turlap.prawko.models.Category;
 import pl.turlap.prawko.models.Language;
+import pl.turlap.prawko.models.Question;
 import pl.turlap.prawko.models.QuestionType;
 
 import java.util.List;
@@ -20,5 +22,9 @@ public interface QuestionService {
     List<QuestionDto> findAllByTypeAndValue(QuestionType type, int value, Language language);
 
     List<QuestionDto> findAllByType(String type, String language);
+
+    List<Question> findAllByCategoryAndType(Category category, QuestionType type);
+
+    Question randomQuestion(Category category);
 
 }

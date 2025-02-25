@@ -22,4 +22,6 @@ public interface TestService {
 
     QuestionDto selectQuestion(Long testId, Integer currentPage);
 
+    Test randomQuestion(Long userId);
+
 }
