@@ -109,6 +109,7 @@ public class ViewController {
         session.setAttribute("testId", test.getId());
         session.setAttribute("currentPage", 0);
         session.setAttribute("startTime", startTime);
+        session.setAttribute("testType", "trueOne");
         return "redirect:exam";
     }
 
@@ -121,8 +122,10 @@ public class ViewController {
         }
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         Long testId = (Long) session.getAttribute("testId");
+        String testType = (String) session.getAttribute("testType");
         model.addAttribute("question", testService.selectQuestion(testId, currentPage));
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("testType", testType);
         return "exam";
     }
 
@@ -132,7 +135,8 @@ public class ViewController {
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         Long testId = (Long) session.getAttribute("testId");
         testService.saveUserAnswer(testId, answerId);
-        if (currentPage > 30) {
+        String testType = (String) session.getAttribute("testType");
+        if (currentPage > 30 || testType.equals("fakeOne")) {
             testService.calculateResult(testId);
             return "redirect:/result";
         }
@@ -148,5 +152,20 @@ public class ViewController {
         model.addAttribute("userAnswers", test.getUserAnswers());
         model.addAttribute("score", test.getScore());
         return "result";
+    }
+
+    @GetMapping(path = "/randomQuestion")
+    public String showRandomQuestion(Principal principal,
+                                     Model model,
+                                     HttpSession session) {
+        User user = userService.findByUserName(principal.getName());
+        Test test = testService.randomQuestion(user.getId());
+        session.setAttribute("currentPage", 0);
+        session.setAttribute("testId", test.getId());
+        session.setAttribute("testType", "fakeOne");
+        model.addAttribute("startTime", LocalDateTime.now());
+        model.addAttribute("question", testService.selectQuestion(test.getId(), 0));
+        model.addAttribute("currentPage", 0);
+        return "exam";
     }
 }
