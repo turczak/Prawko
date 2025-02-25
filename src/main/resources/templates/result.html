@@ -39,38 +39,40 @@
 
 <div class="container mt-5">
     <div class="card">
-        <div class="card-body" th:if="${testType == 'trueOne'}">
-            <h1>Wynik egzaminu: <span th:text="${score}"></span>/74 punkty.</h1>
-            <p><span th:text="${score > 67 ? 'Gratulację, zdałeś!' : 'Niestety, nie udało się uzyskać wystarczającej ilości punktów.'}"></span></p>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Numer pytania</th>
-                    <th>Treść pytania</th>
-                    <th>Udzielona odpowiedź</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="question, stat : ${questions}"
-                    th:classappend="${userAnswers[stat.index].correct} ? 'table-success' : 'table-danger'">
-                    <td th:text="${stat.count}"></td>
-                    <td th:text="${question.translation}"></td>
-                    <td th:text="${userAnswers[stat.index].content}"></td>
-                </tr>
-                </tbody>
-            </table>
+        <div class="card-body" th:switch="${testType}">
+            <div th:case="'trueOne'">
+                <h1>Wynik egzaminu: <span th:text="${score}"></span>/74 punkty.</h1>
+                <p><span
+                        th:text="${score > 67 ? 'Gratulację, zdałeś!' : 'Niestety, nie udało się uzyskać wystarczającej ilości punktów.'}"></span>
+                </p>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Numer pytania</th>
+                        <th>Treść pytania</th>
+                        <th>Udzielona odpowiedź</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="question, stat : ${questions}"
+                        th:classappend="${userAnswers[stat.index].correct} ? 'table-success' : 'table-danger'">
+                        <td th:text="${stat.count}"></td>
+                        <td th:text="${question.translation}"></td>
+                        <td th:text="${userAnswers[stat.index].content}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:case="fakeOne">
+                <h1>FAKE ONE</h1>
+            </div>
         </div>
+
     </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script>
-
-</script>
-<script>
-
-</script>
 </body>
 
 </html>

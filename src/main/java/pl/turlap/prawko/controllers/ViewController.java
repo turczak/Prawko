@@ -151,6 +151,7 @@ public class ViewController {
         model.addAttribute("questions", test.getQuestions());
         model.addAttribute("userAnswers", test.getUserAnswers());
         model.addAttribute("score", test.getScore());
+        model.addAttribute("testType", session.getAttribute("testType"));
         return "result";
     }
 
