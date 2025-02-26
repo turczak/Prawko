@@ -1,9 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
     const timerElement = document.getElementById('timer');
-    if(!timerElement) return;
+    if(!timerElement){
+        console.error("Unknown element.");
+        return;
+    }
     const startTimeStr = timerElement.getAttribute('data-start-time');
-    if(!startTimeStr) return;
-    startTimer(startTimeStr, 25 * 60 * 1000);
+    if(!startTimeStr) {
+        console.error("Unknown start time.");
+        return;
+    }
+    const testType = timerElement.getAttribute('data-test-type');
+    switch(testType){
+        case "full":
+            startTimer(startTimeStr, 25 * 60 * 1000);
+            break;
+        case "mini":
+            startTimer(startTimeStr, 60 * 1000);
+            break;
+        default:
+            console.error("Unknown test type.")
+            return;
+    }
 })
 function startTimer(startTimeStr, duration){
     const startTime = new Date(startTimeStr);
@@ -17,7 +34,11 @@ function startTimer(startTimeStr, duration){
         document.getElementById('timer').textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }else{
         document.getElementById('timer').textContent = "Czas minął.";
-        window.location.href = '/exam/result';
+        if(document.getElementById('timer').getAttribute("data-test-type") == "full"){
+            window.location.href = '/exam/result';
+        }else{
+            window.location.href = '/index';
+        }
         }
     }
 setInterval(updateTimer, 1000);

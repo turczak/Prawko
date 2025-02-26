@@ -19,12 +19,12 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/tests/newExam?category=B}"
+                    <a class="nav-link active" aria-current="page" th:href="@{/newExam(testType='full')}"
                        id="newExam">Nowy
                         egzamin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/newExam(testType='mini')}">Losuj pytanie</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel

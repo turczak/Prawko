@@ -19,10 +19,10 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Nowy egzamin</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/newExam(testType='full')}">Nowy egzamin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Losuj pytanie</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/newExam(testType='mini')}">Losuj pytanie</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
@@ -46,8 +46,8 @@
                     <i class="fas fa-image fa-5x"></i>
                 </div>
             </div>
-            <p>Pozostały czas: <span id="timer" th:data-start-time="${startTime}"></span></p>
-            <p>Pytanie <span th:text="${currentPage + 1}"></span>/32</p>
+            <p>Pozostały czas: <span id="timer" th:data-start-time="${startTime}" th:data-test-type="${testType}"></span></p>
+            <p th:if="${testType == 'full'}">Pytanie <span th:text="${currentPage + 1}"></span>/32</p>
             <div th:unless="${#strings.isEmpty(question.media)}">
                 <!-- check if media is image -->
                 <div
