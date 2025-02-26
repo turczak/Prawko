@@ -100,16 +100,22 @@ public class ViewController {
     }
 
     @GetMapping(path = "/newExam")
-    public String startNewExam(HttpSession session,
+    public String startNewExam(@RequestParam(name = "testType") String testType,
+                               HttpSession session,
                                Principal principal) {
         User user = userService.findByUserName(principal.getName());
-        Test test = testService.generateTest(user.getId());
+        Test test = new Test();
+        if(testType.equals("full")){
+            test = testService.generateTest(user.getId());
+        } else if (testType.equals("mini")){
+            test = testService.randomQuestion(user.getId());
+        }
         LocalDateTime startTime = test.getCreatedAt();
         session.setAttribute("userId", user.getId());
         session.setAttribute("testId", test.getId());
         session.setAttribute("currentPage", 0);
         session.setAttribute("startTime", startTime);
-        session.setAttribute("testType", "trueOne");
+        session.setAttribute("testType", testType);
         return "redirect:exam";
     }
 
@@ -136,7 +142,7 @@ public class ViewController {
         Long testId = (Long) session.getAttribute("testId");
         testService.saveUserAnswer(testId, answerId);
         String testType = (String) session.getAttribute("testType");
-        if (currentPage > 30 || testType.equals("fakeOne")) {
+        if (currentPage > 30 || testType.equals("mini")) {
             testService.calculateResult(testId);
             return "redirect:/result";
         }
@@ -153,20 +159,5 @@ public class ViewController {
         model.addAttribute("score", test.getScore());
         model.addAttribute("testType", session.getAttribute("testType"));
         return "result";
-    }
-
-    @GetMapping(path = "/randomQuestion")
-    public String showRandomQuestion(Principal principal,
-                                     Model model,
-                                     HttpSession session) {
-        User user = userService.findByUserName(principal.getName());
-        Test test = testService.randomQuestion(user.getId());
-        session.setAttribute("currentPage", 0);
-        session.setAttribute("testId", test.getId());
-        session.setAttribute("testType", "fakeOne");
-        model.addAttribute("startTime", LocalDateTime.now());
-        model.addAttribute("question", testService.selectQuestion(test.getId(), 0));
-        model.addAttribute("currentPage", 0);
-        return "exam";
     }
 }

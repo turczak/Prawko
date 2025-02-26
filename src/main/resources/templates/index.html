@@ -19,12 +19,12 @@
         <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav me-auto mb-2 mb-md-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/newExam}"
+                    <a class="nav-link active" aria-current="page" th:href="@{/newExam(testType='full')}"
                        id="newExam">Nowy
                         egzamin</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" th:href="@{/randomQuestion}">Losuj pytanie</a>
+                    <a class="nav-link active" aria-current="page" th:href="@{/newExam(testType='mini')}">Losuj pytanie</a>
                 </li>
                 <li class="nav-item" sec:authorize="hasRole('ADMIN')">
                     <a class="nav-link active" aria-current="page" th:href="@{/admin-panel}">Panel
@@ -86,6 +86,39 @@
         </div>
     </div>
 </nav>
+<section class="container md-4" style="text-align:justify;">
+    <br><br>
+    <h1 style="text-align:center;">Część teoretyczna egzaminu na prawo jazdy</h1>
+    <p>
+        Podczas tej części egzaminu kandydat na kierowcę musi wskazać prawidłową odpowiedź na pytania wyświetlane losowo
+        w czasie rzeczywistym przez systemem komputerowy. Nie ma możliwości powrotu do pytania, na które nie udzielono
+        odpowiedzi. Wyświetlane pytania odzwierciedlają sytuacje, z jakimi kierowcy mogą się spotkać w codziennym ruchu
+        drogowym. Egzamin teoretyczny trwa 25 minut.
+        <br><br>
+        Część teoretyczna egzaminu państwowego obejmuje 20 pytań z wiedzy podstawowej i 12 pytań z wiedzy
+        specjalistycznej w zakresie poszczególnych kategorii prawa jazdy. Każde pytanie zawiera tylko jedną prawidłową
+        odpowiedź. Wprowadzone zostały także różne „wartości” pytań, w zależności od znaczenia dla bezpieczeństwa ruchu
+        drogowego:
+        <br><br>
+    <ul>
+        <li>3 punkty – pytanie o wysokim znaczeniu dla bezpieczeństwa ruchu drogowego,</li>
+        <li>2 punkty – pytanie o średnim znaczeniu dla bezpieczeństwa ruchu drogowego,</li>
+        <li>1 punkt – pytanie o niskim znaczeniu dla bezpieczeństwa lub porządku ruchu drogowego.</li>
+    </ul>
+    <br>
+    Egzamin teoretyczny na prawo jazdy:
+    <br><br>
+    W części podstawowej jest 10 pytań za 3 punkty, 6 pytań za 2 punkty i 4 pytania za 1 punkt.
+    <br>
+    W części specjalistycznej (na poszczególne kategorie): 6 pytań za 3 punkty, 4 pytania za 2 punkty, 2 pytania za 1 punkt.
+    <br>
+    Suma możliwych do uzyskania punktów wynosi 74. Aby zdać egzamin teoretyczny trzeba zdobyć co najmniej 68
+    punktów.
+    </p>
+</section>
+<footer>
+    
+</footer>
 <!-- Bootstrap JS -->
 <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
 </body>
