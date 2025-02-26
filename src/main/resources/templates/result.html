@@ -64,7 +64,21 @@
                 </table>
             </div>
             <div th:case="mini">
-                <h1>FAKE ONE</h1>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Treść pytania</th>
+                        <th>Udzielona odpowiedź</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="question, stat : ${questions}"
+                        th:classappend="${userAnswers[stat.index].correct} ? 'table-success' : 'table-danger'">
+                        <td th:text="${question.translation}"></td>
+                        <td th:text="${userAnswers[stat.index].content}"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
