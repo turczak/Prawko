@@ -25,4 +25,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     List<Question> findAllByCategoryAndType(@Param("category") Category category,
                                             @Param("type") QuestionType type);
 
+    @Query("SELECT q FROM question q WHERE :category MEMBER OF q.categories")
+    List<Question> findAllByCategory(@Param("category") Category category);
+
 }

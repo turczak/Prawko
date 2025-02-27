@@ -100,15 +100,22 @@ public class ViewController {
     }
 
     @GetMapping(path = "/newExam")
-    public String startNewExam(HttpSession session,
+    public String startNewExam(@RequestParam String testType,
+                               HttpSession session,
                                Principal principal) {
         User user = userService.findByUserName(principal.getName());
-        Test test = testService.generateTest(user.getId());
+        Test test = new Test();
+        if(testType.equals("full")){
+            test = testService.generateTest(user.getId());
+        } else if (testType.equals("mini")){
+            test = testService.randomQuestion(user.getId());
+        }
         LocalDateTime startTime = test.getCreatedAt();
         session.setAttribute("userId", user.getId());
         session.setAttribute("testId", test.getId());
         session.setAttribute("currentPage", 0);
         session.setAttribute("startTime", startTime);
+        session.setAttribute("testType", testType);
         return "redirect:exam";
     }
 
@@ -121,8 +128,10 @@ public class ViewController {
         }
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         Long testId = (Long) session.getAttribute("testId");
+        String testType = (String) session.getAttribute("testType");
         model.addAttribute("question", testService.selectQuestion(testId, currentPage));
         model.addAttribute("currentPage", currentPage);
+        model.addAttribute("testType", testType);
         return "exam";
     }
 
@@ -132,7 +141,8 @@ public class ViewController {
         Integer currentPage = (Integer) session.getAttribute("currentPage");
         Long testId = (Long) session.getAttribute("testId");
         testService.saveUserAnswer(testId, answerId);
-        if (currentPage > 30) {
+        String testType = (String) session.getAttribute("testType");
+        if (currentPage > 30 || testType.equals("mini")) {
             testService.calculateResult(testId);
             return "redirect:/result";
         }
@@ -147,6 +157,7 @@ public class ViewController {
         model.addAttribute("questions", test.getQuestions());
         model.addAttribute("userAnswers", test.getUserAnswers());
         model.addAttribute("score", test.getScore());
+        model.addAttribute("testType", session.getAttribute("testType"));
         return "result";
     }
 }

@@ -14,9 +14,9 @@ import pl.turlap.prawko.models.Question;
 import pl.turlap.prawko.models.QuestionType;
 import pl.turlap.prawko.models.Test;
 import pl.turlap.prawko.models.User;
-import pl.turlap.prawko.repositories.QuestionRepository;
 import pl.turlap.prawko.repositories.TestRepository;
 import pl.turlap.prawko.services.AnswerService;
+import pl.turlap.prawko.services.QuestionService;
 import pl.turlap.prawko.services.TestService;
 import pl.turlap.prawko.services.UserService;
 
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 public class TestServiceImpl implements TestService {
 
     private final TestRepository testRepository;
-    private final QuestionRepository questionRepository;
+    private final QuestionService questionService;
     private final QuestionMapper questionMapper;
     private final UserService userService;
     private final TestMapper testMapper;
@@ -79,7 +79,7 @@ public class TestServiceImpl implements TestService {
 
     private List<Question> generateSpecialQuestions(Category category) {
 
-        List<Question> questions = questionRepository.findAllByCategoryAndType(category, QuestionType.SPECJALISTYCZNY);
+        List<Question> questions = questionService.findAllByCategoryAndType(category, QuestionType.SPECJALISTYCZNY);
 
         // 6 questions with 3 points value
         List<Question> threePointsQuestions = questions.stream().filter(question -> question.getValue() == 3).toList();
@@ -112,7 +112,7 @@ public class TestServiceImpl implements TestService {
 
     private List<Question> generateBasicQuestions(Category category) {
 
-        List<Question> questions = questionRepository.findAllByCategoryAndType(category, QuestionType.PODSTAWOWY);
+        List<Question> questions = questionService.findAllByCategoryAndType(category, QuestionType.PODSTAWOWY);
 
         // 10 questions with 3 points value
         List<Question> threePointsQuestions = questions.stream().filter(question -> question.getValue() == 3).toList();
@@ -161,5 +161,19 @@ public class TestServiceImpl implements TestService {
         Language language = test.getUser().getLanguage();
         Question question = test.getQuestions().get(currentPage);
         return questionMapper.toDto(question, language);
+    }
+
+    @Override
+    public Test randomQuestion(Long userId) {
+        User user = userService.findById(userId);
+        Question question = questionService.randomQuestion(user.getCategory());
+        Test oneQuestionTest = new Test()
+                .withUser(user)
+                .withQuestions(List.of(question))
+                .withCreatedAt(LocalDateTime.now())
+                .withIsActive(true);
+        user.getTests().add(oneQuestionTest);
+        testRepository.save(oneQuestionTest);
+        return oneQuestionTest;
     }
 }
