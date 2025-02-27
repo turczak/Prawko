@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class QuestionServiceImpl implements QuestionService {
 
+    private final static Random random = new Random();
+
     private final QuestionRepository questionRepository;
 
     private final LanguageService languageService;
@@ -31,8 +33,6 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionMapper questionMapper;
 
     private final CSVService csvService;
-
-    private final static Random random = new Random();
 
     @Override
     public List<QuestionDto> findAllQuestionsByLanguage(String language) {
