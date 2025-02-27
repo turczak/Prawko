@@ -100,7 +100,7 @@ public class ViewController {
     }
 
     @GetMapping(path = "/newExam")
-    public String startNewExam(@RequestParam(name = "testType") String testType,
+    public String startNewExam(@RequestParam String testType,
                                HttpSession session,
                                Principal principal) {
         User user = userService.findByUserName(principal.getName());

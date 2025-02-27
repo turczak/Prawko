@@ -32,6 +32,8 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final CSVService csvService;
 
+    private final static Random random = new Random();
+
     @Override
     public List<QuestionDto> findAllQuestionsByLanguage(String language) {
         Language byNameOrCode = languageService.findByNameOrCode(language);
@@ -83,7 +85,6 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public Question randomQuestion(Category category) {
         List<Question> byCategory = questionRepository.findAllByCategory(category);
-        Random random = new Random();
         return byCategory.get(random.nextInt(byCategory.size()));
     }
 }

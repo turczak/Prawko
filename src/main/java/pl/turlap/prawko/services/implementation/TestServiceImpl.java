@@ -166,12 +166,10 @@ public class TestServiceImpl implements TestService {
     @Override
     public Test randomQuestion(Long userId) {
         User user = userService.findById(userId);
-        List<Question> questions = new ArrayList<>();
         Question question = questionService.randomQuestion(user.getCategory());
-        questions.add(question);
         Test oneQuestionTest = new Test()
                 .withUser(user)
-                .withQuestions(questions)
+                .withQuestions(List.of(question))
                 .withCreatedAt(LocalDateTime.now())
                 .withIsActive(true);
         user.getTests().add(oneQuestionTest);
