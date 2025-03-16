@@ -58,15 +58,11 @@ public class TestServiceImpl implements TestService {
     @Override
     public Test generateTest(Long userId) {
         User user = userService.findById(userId);
-        List<Question> basicQuestions = generateBasicQuestions(user.getCategory());
-        List<Question> specialQuestions = generateSpecialQuestions(user.getCategory());
-
-        List<Question> allQuestions = Stream.of(basicQuestions,
-                        specialQuestions
-                )
+        Category category = user.getCategory();
+        List<Question> allQuestions = Stream.of(generateBasicQuestions(category),
+                        generateSpecialQuestions(category))
                 .flatMap(Collection::stream)
                 .toList();
-
         Test test = new Test()
                 .withUser(user)
                 .withQuestions(allQuestions)
@@ -78,26 +74,19 @@ public class TestServiceImpl implements TestService {
     }
 
     private List<Question> generateSpecialQuestions(Category category) {
-
-        List<Question> questions = questionService.findAllByCategoryAndType(category, QuestionType.SPECJALISTYCZNY);
-
-        // 6 questions with 3 points value
-        List<Question> threePointsQuestions = questions.stream().filter(question -> question.getValue() == 3).toList();
-        List<Question> shuffledThreePointsQuestions = selectRandomQuestions(threePointsQuestions, 6);
-
-        // 4 questions with 2 points value
-        List<Question> twoPointsQuestions = questions.stream().filter(question -> question.getValue() == 2).toList();
-        List<Question> shuffledTwoPointsQuestions = selectRandomQuestions(twoPointsQuestions, 4);
-
-        // 2 questions with 1 points value
-        List<Question> onePointsQuestions = questions.stream().filter(question -> question.getValue() == 1).toList();
-        List<Question> shuffledOnePointsQuestions = selectRandomQuestions(onePointsQuestions, 2);
-
-        return Stream.of(shuffledOnePointsQuestions,
-                        shuffledTwoPointsQuestions,
-                        shuffledThreePointsQuestions)
+        Map<Integer, List<Question>> specialQuestions = questionService.findAllByCategoryAndType(
+                        category, QuestionType.SPECJALISTYCZNY)
+                .stream()
+                .collect(Collectors.groupingBy(Question::getValue));
+        return Stream.of(
+                        selectRandomQuestions(specialQuestions.getOrDefault(
+                                3, Collections.emptyList()), 6),
+                        selectRandomQuestions(specialQuestions.getOrDefault(
+                                2, Collections.emptyList()), 4),
+                        selectRandomQuestions(specialQuestions.getOrDefault(
+                                1, Collections.emptyList()), 2))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
@@ -111,26 +100,19 @@ public class TestServiceImpl implements TestService {
     }
 
     private List<Question> generateBasicQuestions(Category category) {
-
-        List<Question> questions = questionService.findAllByCategoryAndType(category, QuestionType.PODSTAWOWY);
-
-        // 10 questions with 3 points value
-        List<Question> threePointsQuestions = questions.stream().filter(question -> question.getValue() == 3).toList();
-        List<Question> shuffledThreePointsQuestions = selectRandomQuestions(threePointsQuestions, 10);
-
-        // 6 questions with 2 points value
-        List<Question> twoPointsQuestions = questions.stream().filter(question -> question.getValue() == 2).toList();
-        List<Question> shuffledTwoPointsQuestions = selectRandomQuestions(twoPointsQuestions, 6);
-
-        // 4 questions with 1 points value
-        List<Question> onePointsQuestions = questions.stream().filter(question -> question.getValue() == 1).toList();
-        List<Question> shuffledOnePointsQuestions = selectRandomQuestions(onePointsQuestions, 4);
-
-        return Stream.of(shuffledOnePointsQuestions,
-                        shuffledTwoPointsQuestions,
-                        shuffledThreePointsQuestions)
+        Map<Integer, List<Question>> basicQuestions = questionService.findAllByCategoryAndType(
+                        category, QuestionType.PODSTAWOWY)
+                .stream()
+                .collect(Collectors.groupingBy(Question::getValue));
+        return Stream.of(
+                        selectRandomQuestions(basicQuestions.getOrDefault(
+                                3, Collections.emptyList()), 10),
+                        selectRandomQuestions(basicQuestions.getOrDefault(
+                                2, Collections.emptyList()), 6),
+                        selectRandomQuestions(basicQuestions.getOrDefault(
+                                1, Collections.emptyList()), 4))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private List<Question> selectRandomQuestions(List<Question> questions, int count) {
