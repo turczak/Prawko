@@ -76,10 +76,9 @@ Dla lepszego zrozumienia i zademonstrowania architektury modeli danych używanyc
 Wykorzystany języka programowania to **Java 17** wraz z frameworkiem **Spring**.<br>
 Do napisania systemu posłużyło mi **Intellij IDEA**.<br>
 Aplikacja była budowana z użyciem narzędzia **Maven**.
+Do testowania API używałem **Bruno**.
 
 # Frontend
 
 Jako silnik szablonów wykorzystałem **Thymealeaf**.<br>
 Skrypty pomocnicze pisałem z użyciem **JavaScript**.
-
-
